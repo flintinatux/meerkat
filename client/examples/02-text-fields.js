@@ -1,14 +1,13 @@
 const assoc   = require('ramda/src/assoc')
 const compose = require('ramda/src/compose')
-const flip    = require('ramda/src/flip')
 const j2c     = require('j2c')
 const K       = require('ramda/src/always')
 const m       = require('mithril')
 const reverse = require('ramda/src/reverse')
 const Type    = require('union-type')
 
-const component = require('../lib/component')
-const { scan, targetVal } = require('../lib/util')
+const component = require('../lib/new-component')
+const { targetVal } = require('../lib/util')
 
 const init = K({
   content: ''
@@ -22,33 +21,28 @@ const update = Cmd.caseOn({
   Change: assoc('content')
 })
 
-const view = vnode => {
-  const cmds  = m.prop(),
-        model = scan(flip(update), init(), cmds)
+const view = (update, model) =>
+  m('div', { className: css.root }, [
+    m('style', css.toString()),
 
-  return vnode =>
-    m('div', { className: css.root }, [
-      m('style', css.toString()),
+    m('input', {
+      className: css.input,
+      autofocus: true,
+      oninput: compose(update, Cmd.Change, targetVal),
+      placeholder: 'Text to reverse'
+    }),
 
-      m('input', {
-        className: css.input,
-        autofocus: true,
-        oninput: compose(cmds, Cmd.Change, targetVal),
-        placeholder: 'Text to reverse'
-      }),
+    m('span', { className: css.arrow }, '<=>'),
 
-      m('span', { className: css.arrow }, '<=>'),
+    m('input', {
+      className: [css.input, css.reverse].join(' '),
+      disabled: true,
+      placeholder: 'Reversed result',
+      value: reverse(model.content)
+    })
+  ])
 
-      m('input', {
-        className: css.input,
-        disabled: true,
-        placeholder: 'Reversed result',
-        value: reverse(model().content)
-      })
-    ])
-}
-
-module.exports = component(view)
+module.exports = component({ init, update, view })
 
 const spacing = '2rem'
 
@@ -63,7 +57,11 @@ const css = j2c.sheet({
     marginRight: spacing,
     outline: 'none',
     padding: '0.8rem 1.2rem',
-    width: '20rem'
+    width: '20rem',
+
+    '&.reverse': {
+      textAlign: 'right'
+    }
   },
 
   '.root': {
