@@ -1,0 +1,56 @@
+{
+  "name": "meerkat",
+  "version": "1.0.0",
+  "description": "Trying to be functional and mithril at the same time",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flintinatux/meerkat.git"
+  },
+  "author": "flintinatux",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/flintinatux/meerkat/issues"
+  },
+  "homepage": "https://github.com/flintinatux/meerkat#readme",
+  "main": "index.js",
+  "scripts": {
+    "build": "run-p build:*",
+    "build:scripts": "browserify client/app.js > dist/app.js",
+    "build:styles": "lessc client/app.less | postcss -u autoprefixer | cleancss --s0 > dist/app.css",
+    "build:views": "pug -o dist client/*.pug",
+    "clean": "rm -rf dist/*",
+    "heroku-postbuild": "npm run build",
+    "postbuild": "ccjs dist/app.js --warning_level=QUIET > dist/app-min.js",
+    "prebuild": "npm run clean && mkdir -p dist",
+    "prewatch": "npm run clean && mkdir -p dist",
+    "prewatch:styles": "npm run build:styles",
+    "start": "node server/server.js",
+    "start:dev": "browser-sync start -s dist -f dist --port 4000 --no-open --no-notify --extensions *.html",
+    "test": "echo \"No tests yet\" && exit 0",
+    "watch": "run-p watch:*",
+    "watch:scripts": "watchify client/app.js -d -v -o dist/app.js",
+    "watch:styles": "eye --*glob=client/**/*.less npm run build:styles",
+    "watch:views": "pug -o dist -w client/*.pug"
+  },
+  "dependencies": {
+    "autoprefixer": "^6.4.0",
+    "browser-sync": "^2.14.0",
+    "browserify": "^13.1.0",
+    "clean-css": "^3.4.19",
+    "closurecompiler": "^1.6.0",
+    "j2c": "^0.11.2",
+    "less": "^2.7.1",
+    "mithril": "github:lhorie/mithril.js#rewrite",
+    "normalize.css": "^4.2.0",
+    "npm-run-all": "^2.3.0",
+    "postcss-cli": "^2.5.2",
+    "pug-cli": "^1.0.0-alpha6",
+    "ramda": "^0.22.0",
+    "union-type": "^0.3.1"
+  },
+  "devDependencies": {
+    "eye": "0.0.3",
+    "treis": "^2.3.16",
+    "watchify": "^3.7.0"
+  }
+}
