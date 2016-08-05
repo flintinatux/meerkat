@@ -1,19 +1,18 @@
-const m = require('mithril')
+const flip = require('ramda/src/flip')
+const m    = require('mithril')
 
-const stated = hook => vnode => vnode.state[hook](vnode)
+const { scan } = require('../lib/util')
 
-const oninit = Comp => vnode => {
-  vnode.state.oncreate = m.prop()
-  vnode.state.onremove = m.prop()
-  vnode.state.view = Comp(vnode)
+const oninit = (init, update) => vnode => {
+  const actions = m.prop(),
+        model   = scan(flip(update), init(), actions)
+  vnode.state = { model, update: actions }
 }
 
-const onbeforeupdate = (vnode, old) => old.instance !== vnode.state.view()
+const stateless = view =>
+  ({ state: { update, model } }) => view(update, model())
 
-const oncreate = stated('oncreate')
-const onremove = stated('onremove')
-const view     = stated('view')
-
-module.exports = function(Comp) {
-  return { oninit: oninit(Comp), oncreate, onbeforeupdate, onremove, view }
-}
+module.exports = ({ init, update, view }) => ({
+  oninit: oninit(init, update),
+  view:   stateless(view)
+})

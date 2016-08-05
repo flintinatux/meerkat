@@ -6,7 +6,7 @@ const m       = require('mithril')
 const reverse = require('ramda/src/reverse')
 const Type    = require('union-type')
 
-const component = require('../lib/new-component')
+const component = require('../lib/component')
 const { targetVal } = require('../lib/util')
 
 const init = K({

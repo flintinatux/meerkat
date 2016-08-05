@@ -1,6 +1,5 @@
 const compose = require('ramda/src/compose')
 const dec  = require('ramda/src/dec')
-const flip = require('ramda/src/flip')
 const inc  = require('ramda/src/inc')
 const j2c  = require('j2c')
 const K    = require('ramda/src/always')
@@ -8,7 +7,6 @@ const m    = require('mithril')
 const Type = require('union-type')
 
 const component  = require('../lib/component')
-const { scan } = require('../lib/util')
 
 const init = K(0)
 
@@ -24,38 +22,33 @@ const update = Cmd.caseOn({
   Reset: K(0)
 })
 
-const view = vnode => {
-  const cmds  = m.prop(),
-        model = scan(flip(update), init(), cmds)
+const view = (update, model) =>
+  m('div', { className: css.root }, [
+    m('style', css.toString()),
 
-  return vnode =>
-    m('div', { className: css.root }, [
-      m('style', css.toString()),
+    m('button', {
+      className: css.btn,
+      onclick: compose(update, K(Cmd.Reset()))
+    }, 'Reset'),
 
-      m('button', {
-        className: css.btn,
-        onclick: compose(cmds, K(Cmd.Reset()))
-      }, 'Reset'),
+    m('button', {
+      className: css.btn,
+      onclick: compose(update, K(Cmd.Dec()))
+    }, '-'),
 
-      m('button', {
-        className: css.btn,
-        onclick: compose(cmds, K(Cmd.Dec()))
-      }, '-'),
+    m('input', {
+      className: css.input,
+      disabled: true,
+      value: model
+    }),
 
-      m('input', {
-        className: css.input,
-        disabled: true,
-        value: model()
-      }),
+    m('button', {
+      className: css.btn,
+      onclick: compose(update, K(Cmd.Inc()))
+    }, '+'),
+  ])
 
-      m('button', {
-        className: css.btn,
-        onclick: compose(cmds, K(Cmd.Inc()))
-      }, '+'),
-    ])
-}
-
-module.exports = component(view)
+module.exports = component({ init, update, view })
 
 const css = j2c.sheet({
   '.btn': {
