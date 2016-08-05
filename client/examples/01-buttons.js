@@ -1,4 +1,4 @@
-const c    = require('ramda/src/compose')
+const compose = require('ramda/src/compose')
 const dec  = require('ramda/src/dec')
 const flip = require('ramda/src/flip')
 const inc  = require('ramda/src/inc')
@@ -8,25 +8,25 @@ const m    = require('mithril')
 const Type = require('union-type')
 
 const component  = require('../lib/component')
-const { reduce } = require('../lib/util')
+const { scan } = require('../lib/util')
 
 const init = K(0)
 
-const Msg = Type({
+const Cmd = Type({
   Dec:   [],
   Inc:   [],
   Reset: []
 })
 
-const update = Msg.caseOn({
+const update = Cmd.caseOn({
   Dec:   dec,
   Inc:   inc,
   Reset: K(0)
 })
 
-const Buttons = vnode => {
-  const actions = m.prop(),
-        model   = reduce(flip(update), init(), actions)
+const view = vnode => {
+  const cmds  = m.prop(),
+        model = scan(flip(update), init(), cmds)
 
   return vnode =>
     m('div', { className: css.root }, [
@@ -34,12 +34,12 @@ const Buttons = vnode => {
 
       m('button', {
         className: css.btn,
-        onclick: c(actions, K(Msg.Reset()))
+        onclick: compose(cmds, K(Cmd.Reset()))
       }, 'Reset'),
 
       m('button', {
         className: css.btn,
-        onclick: c(actions, K(Msg.Dec()))
+        onclick: compose(cmds, K(Cmd.Dec()))
       }, '-'),
 
       m('input', {
@@ -50,12 +50,12 @@ const Buttons = vnode => {
 
       m('button', {
         className: css.btn,
-        onclick: c(actions, K(Msg.Inc()))
+        onclick: compose(cmds, K(Cmd.Inc()))
       }, '+'),
     ])
 }
 
-module.exports = component(Buttons)
+module.exports = component(view)
 
 const css = j2c.sheet({
   '.btn': {
