@@ -1,4 +1,5 @@
 const flip = require('ramda/src/flip')
+const I    = require('ramda/src/identity')
 const m    = require('mithril')
 
 const { scan } = require('../lib/util')
@@ -10,9 +11,9 @@ const oninit = (init, update) => vnode => {
 }
 
 const stateless = view =>
-  ({ state: { update, model } }) => view(update, model())
+  ({ state: { update, model } }) => view(model(), update)
 
-module.exports = ({ init, update, view }) => ({
+module.exports = ({ init=I, update=I, view }) => ({
   oninit: oninit(init, update),
   view:   stateless(view)
 })

@@ -21,7 +21,7 @@ const update = Cmd.caseOn({
   Change: assoc('content')
 })
 
-const view = (update, model) =>
+const view = (model, update) =>
   m('div', { className: css.root }, [
     m('style', css.toString()),
 

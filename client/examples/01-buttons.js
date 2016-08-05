@@ -22,7 +22,7 @@ const update = Cmd.caseOn({
   Reset: K(0)
 })
 
-const view = (update, model) =>
+const view = (model, update) =>
   m('div', { className: css.root }, [
     m('style', css.toString()),
 
