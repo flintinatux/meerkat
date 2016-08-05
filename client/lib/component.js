@@ -5,7 +5,7 @@ const { scan } = require('../lib/util')
 
 const oninit = (init, update) => vnode => {
   const actions = m.prop(),
-        model   = scan(flip(update), init(), actions)
+        model   = scan(flip(update), init(vnode.attrs), actions)
   vnode.state = { model, update: actions }
 }
 
