@@ -6,4 +6,6 @@ exports.scan = function(fn, acc, s) {
   return ns
 }
 
+exports.preventDefault = e => e.preventDefault()
+
 exports.targetVal = e => e.target.value
