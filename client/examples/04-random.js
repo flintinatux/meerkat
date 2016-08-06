@@ -3,7 +3,6 @@ const compose = require('ramda/src/compose')
 const j2c     = require('j2c')
 const K       = require('ramda/src/always')
 const m       = require('mithril')
-const map     = require('ramda/src/map')
 const Type    = require('union-type')
 
 const component = require('../lib/component')

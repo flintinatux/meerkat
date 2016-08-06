@@ -9,6 +9,11 @@ exports.scan = function(fn, acc, s) {
 
 exports.preventDefault = e => e.preventDefault()
 
+exports.request = opts =>
+  Task((rej, res) => m.request(opts).map(res).catch(rej))
+
 exports.targetVal = e => e.target.value
 
 exports.typeEq = curry((prop, type, x) => typeof x[prop] === type)
+
+const Task = require('./task')

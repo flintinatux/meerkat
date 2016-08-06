@@ -1,7 +1,7 @@
 const compose = require('ramda/src/compose')
 const K = require('ramda/src/always')
 
-const { typeEq } = require('../lib/util')
+const { typeEq } = require('./util')
 
 const IO = runIO => ({
   map: f => IO(compose(f, runIO)),
