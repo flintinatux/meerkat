@@ -14,7 +14,7 @@ const init = K({
 })
 
 const Msg = Type({
-  Change: [String]
+  Change: [ String ]
 })
 
 const update = Msg.caseOn({

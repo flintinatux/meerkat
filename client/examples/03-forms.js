@@ -17,11 +17,11 @@ const init = K({
 })
 
 const Msg = Type({
-  Age:      [Number],
-  Confirm:  [String],
-  Name:     [String],
-  Password: [String],
-  Validate: []
+  Age:      [ Number ],
+  Confirm:  [ String ],
+  Name:     [ String ],
+  Password: [ String ],
+  Validate: [ ]
 })
 
 const update = Msg.caseOn({
@@ -88,9 +88,7 @@ const validation = model => {
     errors.push('Password must include uppercase, lowecase, and numeric chars')
 
   return m('div', {
-    style: {
-      color: !errors.length ? 'green' : 'red'
-    }
+    style: { color: !errors.length ? 'green' : 'red' }
   }, !errors.length ? 'OK' : errors.map(error => m('div', error)))
 }
 
