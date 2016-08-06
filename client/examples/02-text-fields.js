@@ -13,11 +13,11 @@ const init = K({
   content: ''
 })
 
-const Cmd = Type({
+const Msg = Type({
   Change: [String]
 })
 
-const update = Cmd.caseOn({
+const update = Msg.caseOn({
   Change: assoc('content')
 })
 
@@ -28,7 +28,7 @@ const view = (model, update) =>
     m('input', {
       className: css.input,
       autofocus: true,
-      oninput: compose(update, Cmd.Change, targetVal),
+      oninput: compose(update, Msg.Change, targetVal),
       placeholder: 'Text to reverse'
     }),
 

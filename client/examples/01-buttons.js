@@ -10,13 +10,13 @@ const component  = require('../lib/component')
 
 const init = K(0)
 
-const Cmd = Type({
+const Msg = Type({
   Dec:   [],
   Inc:   [],
   Reset: []
 })
 
-const update = Cmd.caseOn({
+const update = Msg.caseOn({
   Dec:   dec,
   Inc:   inc,
   Reset: K(0)
@@ -28,12 +28,12 @@ const view = (model, update) =>
 
     m('button', {
       className: css.btn,
-      onclick: compose(update, K(Cmd.Reset()))
+      onclick: compose(update, K(Msg.Reset()))
     }, 'Reset'),
 
     m('button', {
       className: css.btn,
-      onclick: compose(update, K(Cmd.Dec()))
+      onclick: compose(update, K(Msg.Dec()))
     }, '-'),
 
     m('input', {
@@ -44,7 +44,7 @@ const view = (model, update) =>
 
     m('button', {
       className: css.btn,
-      onclick: compose(update, K(Cmd.Inc()))
+      onclick: compose(update, K(Msg.Inc()))
     }, '+'),
   ])
 
