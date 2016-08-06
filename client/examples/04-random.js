@@ -18,7 +18,7 @@ const Msg = Type({
 })
 
 const update = Msg.caseOn({
-  Roll: (roll, model) => assoc('face', roll.run(), model)
+  Roll: (roll, model) => assoc('face', roll.runIO(), model)
 })
 
 const roll = IO(_ => Math.ceil(Math.random() * 6))

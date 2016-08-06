@@ -3,12 +3,12 @@ const K = require('ramda/src/always')
 
 const { typeEq } = require('../lib/util')
 
-const IO = run => ({
-  map: f => IO(compose(f, run)),
-  run
+const IO = runIO => ({
+  map: f => IO(compose(f, runIO)),
+  runIO
 })
 
-IO.is = typeEq('run', 'function')
+IO.is = typeEq('runIO', 'function')
 
 IO.of = x => IO(K(x))
 
