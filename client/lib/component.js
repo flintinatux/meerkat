@@ -2,11 +2,12 @@ const flip = require('ramda/src/flip')
 const I    = require('ramda/src/identity')
 const m    = require('mithril')
 
-const { scan } = require('../lib/util')
+const { log, scan } = require('../lib/util')
 
 const oninit = (init, update) => vnode => {
   const actions = m.prop(),
         model   = scan(flip(update), init(vnode.attrs), actions)
+  model.map(log)
   vnode.state = { model, update: actions }
 }
 

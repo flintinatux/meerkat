@@ -4,36 +4,34 @@ const inc  = require('ramda/src/inc')
 const j2c  = require('j2c')
 const K    = require('ramda/src/always')
 const m    = require('mithril')
-const Type = require('union-type')
 
-const component  = require('../lib/component')
+const { create, handle } = require('../lib/actions')
+const redux = require('../lib/redux')
 
-const init = K(0)
+const Action = {
+  Dec:   create('Dec'),
+  Inc:   create('Inc'),
+  Reset: create('Reset')
+}
 
-const Msg = Type({
-  Dec:   [],
-  Inc:   [],
-  Reset: []
-})
-
-const update = Msg.caseOn({
+const reducer = handle(0, {
   Dec:   dec,
   Inc:   inc,
   Reset: K(0)
 })
 
-const view = (model, update) =>
+const view = (model, dispatch) =>
   m('div', { className: css.root }, [
     m('style', css.toString()),
 
     m('button', {
       className: css.btn,
-      onclick: compose(update, K(Msg.Reset()))
+      onclick: compose(dispatch, K(Action.Reset()))
     }, 'Reset'),
 
     m('button', {
       className: css.btn,
-      onclick: compose(update, K(Msg.Dec()))
+      onclick: compose(dispatch, K(Action.Dec()))
     }, '-'),
 
     m('input', {
@@ -44,11 +42,11 @@ const view = (model, update) =>
 
     m('button', {
       className: css.btn,
-      onclick: compose(update, K(Msg.Inc()))
+      onclick: compose(dispatch, K(Action.Inc()))
     }, '+'),
   ])
 
-module.exports = component({ init, update, view })
+module.exports = redux({ reducer, view })
 
 const css = j2c.sheet({
   '.btn': {
