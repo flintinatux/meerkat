@@ -38,6 +38,7 @@
     "browserify": "^13.1.0",
     "clean-css": "^3.4.19",
     "closurecompiler": "^1.6.0",
+    "debug": "^2.2.0",
     "j2c": "^0.11.2",
     "less": "^2.7.1",
     "mithril": "github:lhorie/mithril.js#rewrite",

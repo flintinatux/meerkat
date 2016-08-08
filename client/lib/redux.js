@@ -1,15 +1,17 @@
+const compose = require('ramda/src/compose')
+const debug = require('debug')
 const I = require('ramda/src/identity')
 const m = require('mithril')
 
 const { create, handle } = require('../lib/actions')
-const { log, scan }      = require('../lib/util')
+const { log, scan, toString } = require('../lib/util')
 
 const oninit = reducer => vnode => {
   const dispatch = m.prop(),
         model = scan(reducer, reducer(undefined, {}), dispatch)
 
-  dispatch.map(log)
-  model.map(log)
+  dispatch.map(compose(debug('dispatch'), JSON.stringify))
+  model.map(compose(debug('model'), JSON.stringify))
 
   vnode.state = { dispatch, model }
 }
