@@ -3,8 +3,7 @@ const debug = require('debug')
 const I = require('ramda/src/identity')
 const m = require('mithril')
 
-const { create, handle } = require('../lib/actions')
-const { log, scan, toString } = require('../lib/util')
+const { log, scan } = require('../lib/util')
 
 const oninit = reducer => vnode => {
   const dispatch = m.prop(),
