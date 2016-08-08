@@ -21,10 +21,14 @@ const reducer = handle(initial, {
 })
 
 const async = handle({
-  Roll: dispatch => IO(roll).map(Action.Face).map(dispatch).runIO()
+  Roll: dispatch => IO(Math.random)
+    .map(roll)
+    .map(Action.Face)
+    .map(dispatch)
+    .runIO()
 })
 
-const roll = _ => Math.ceil(Math.random() * 6)
+const roll = random => Math.ceil(random * 6)
 
 const view = (model, dispatch) =>
   m('div', { className: css.root }, [
