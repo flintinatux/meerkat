@@ -10,6 +10,8 @@ exports.createAll = types => reduce((Action, type) =>
   assoc(type, exports.create(type), Action)
 , {}, types)
 
-exports.handle = (initial, reduceMap={}) =>
-  (state=initial, { type, payload }) =>
-    reduceMap[type] ? reduceMap[type](state, payload) : state
+exports.handle = (initial, reduceMap) => {
+  if (reduceMap === undefined) [reduceMap, initial] = [initial, null]
+  return (state=initial, { type, payload }, getState) =>
+    reduceMap[type] ? reduceMap[type](state, payload, getState) : state
+}

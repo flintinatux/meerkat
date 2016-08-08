@@ -22,7 +22,7 @@ const reducer = handle(initial, {
   Reset:  assoc('content', '')
 })
 
-const view = (model, dispatch) =>
+const view = (state, dispatch) =>
   m('div', { className: css.root }, [
     m('style', css.toString()),
 
@@ -36,7 +36,7 @@ const view = (model, dispatch) =>
       autofocus: true,
       oninput: compose(dispatch, Action.Change, targetVal),
       placeholder: 'Text to reverse',
-      value: model.content
+      value: state.content
     }),
 
     m('span', { className: css.arrow }, '<=>'),
@@ -45,7 +45,7 @@ const view = (model, dispatch) =>
       className: [css.input, css.reverse].join(' '),
       disabled: true,
       placeholder: 'Reversed result',
-      value: reverse(model.content)
+      value: reverse(state.content)
     })
   ])
 

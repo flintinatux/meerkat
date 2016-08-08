@@ -20,7 +20,7 @@ const reducer = handle(0, {
   Reset: K(0)
 })
 
-const view = (model, dispatch) =>
+const view = (state, dispatch) =>
   m('div', { className: css.root }, [
     m('style', css.toString()),
 
@@ -37,7 +37,7 @@ const view = (model, dispatch) =>
     m('input', {
       className: css.input,
       disabled: true,
-      value: model
+      value: state
     }),
 
     m('button', {

@@ -1,28 +1,32 @@
 const assoc   = require('ramda/src/assoc')
 const compose = require('ramda/src/compose')
+const flip    = require('ramda/src/flip')
 const j2c     = require('j2c')
 const K       = require('ramda/src/always')
 const m       = require('mithril')
-const Type    = require('union-type')
 
-const component = require('../lib/component')
+const { createAll, handle } = require('../lib/actions')
 const IO = require('../lib/io')
+const redux = require('../lib/redux')
 
-const init = K({
-  face: 1
+const initial = { face: 1 }
+
+const Action = createAll([
+  'Face',
+  'Roll'
+])
+
+const reducer = handle(initial, {
+  Face: flip(assoc('face'))
 })
 
-const Msg = Type({
-  Roll: [ IO.is ]
+const async = handle({
+  Roll: dispatch => IO(roll).map(Action.Face).map(dispatch).runIO()
 })
 
-const update = Msg.caseOn({
-  Roll: (roll, model) => assoc('face', roll.runIO(), model)
-})
+const roll = _ => Math.ceil(Math.random() * 6)
 
-const roll = IO(_ => Math.ceil(Math.random() * 6))
-
-const view = (model, update) =>
+const view = (model, dispatch) =>
   m('div', { className: css.root }, [
     m('style', css.toString()),
 
@@ -30,11 +34,11 @@ const view = (model, update) =>
 
     m('button', {
       className: css.btn,
-      onclick: compose(update, Msg.Roll, K(roll))
+      onclick: compose(dispatch, K(Action.Roll())),
     }, 'Roll')
   ])
 
-module.exports = component({ init, update, view })
+module.exports = redux({ async, reducer, view })
 
 const spacing = '1rem'
 

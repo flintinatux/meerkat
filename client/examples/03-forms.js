@@ -33,7 +33,7 @@ const reducer = handle(initial, {
   Validate: assoc('validate', true)
 })
 
-const view = (model, dispatch) =>
+const view = (state, dispatch) =>
   m('form', {
     className: css.root,
     onsubmit: compose(dispatch, K(Action.Validate()), preventDefault)
@@ -73,12 +73,12 @@ const view = (model, dispatch) =>
       type: 'submit'
     }, 'Submit'),
 
-    model.validate ? validation(model) : ''
+    state.validate ? validation(state) : ''
   ])
 
-const validation = model => {
+const validation = state => {
   const errors = [],
-        { password, confirm } = model
+        { password, confirm } = state
 
   if (password !== confirm) errors.push('Passwords do not match')
   if (password.length < 8)  errors.push('Password length must be >= 8 chars')
