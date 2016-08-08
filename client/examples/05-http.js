@@ -1,41 +1,39 @@
 const assoc   = require('ramda/src/assoc')
 const compose = require('ramda/src/compose')
+const flip    = require('ramda/src/flip')
 const j2c     = require('j2c')
 const K       = require('ramda/src/always')
 const m       = require('mithril')
 const prop    = require('ramda/src/prop')
-const Type    = require('union-type')
 
-const component = require('../lib/component')
+const { createAll, handle } = require('../lib/actions')
 const { error, log, request } = require('../lib/util')
-const Task = require('../lib/task')
+const redux = require('../lib/redux')
 
 const giphyUri = 'https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag='
 
-const init = K({
+const initial = {
   topic: 'cats',
-  gif:   'waiting.gif'
+  gif:   'https://goo.gl/RYb70Z'
+}
+
+const Action = createAll([
+  'Gif',
+  'More'
+])
+
+const reducer = handle(initial, {
+  Gif: flip(assoc('gif'))
 })
 
-const Msg = Type({
-  Gif:  [ String ],
-  More: [ Task.is ]
+const async = handle({
+  More: (dispatch, topic) =>
+    request({ method: 'GET', url: giphyUri + topic })
+      .map(compose(Action.Gif, prop('image_url'), prop('data')))
+      .fork(error, dispatch)
 })
 
-const randomGif = topic =>
-  request({ method: 'GET', url: giphyUri + topic })
-    .map(prop('data'))
-    .map(prop('image_url'))
-
-const update = Msg.caseOn({
-  Gif:  assoc('gif'),
-  More: (more, model) => {
-    more.fork(error, compose(m.redraw, update, Msg.Gif, log))
-    return model
-  }
-})
-
-const view = (model, update) =>
+const view = (model, dispatch) =>
   m('div', { className: css.root }, [
     m('style', css.toString()),
 
@@ -48,11 +46,11 @@ const view = (model, update) =>
 
     m('button', {
       className: css.btn,
-      onclick: compose(update, Msg.More, randomGif, K(model.topic))
+      onclick: compose(dispatch, Action.More, K(model.topic))
     }, 'More please!')
   ])
 
-module.exports = component({ init, update, view })
+module.exports = redux({ async, reducer, view })
 
 const spacing = '1rem'
 
@@ -62,6 +60,7 @@ const css = j2c.sheet({
     border: '0.1rem solid #ccc',
     borderRadius: '0.2rem',
     cursor: 'pointer',
+    display: 'block',
     marginBottom: spacing,
     outline: 'none',
     padding: '0.8rem 1.2rem',
@@ -73,12 +72,11 @@ const css = j2c.sheet({
   },
 
   '.image': {
+    display: 'block',
     marginBottom: spacing
   },
 
   '.root': {
-    display: 'flex',
-    flexDirection: 'column',
     margin: '2rem'
   },
 
