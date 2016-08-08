@@ -21,11 +21,8 @@ const reducer = handle(initial, {
 })
 
 const async = handle({
-  Roll: dispatch => IO(Math.random)
-    .map(roll)
-    .map(Action.Face)
-    .map(dispatch)
-    .runIO()
+  Roll: dispatch =>
+    IO(Math.random).map(compose(dispatch, Action.Face, roll)).runIO()
 })
 
 const roll = random => Math.ceil(random * 6)
