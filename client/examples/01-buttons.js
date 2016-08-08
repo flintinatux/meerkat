@@ -5,14 +5,14 @@ const j2c  = require('j2c')
 const K    = require('ramda/src/always')
 const m    = require('mithril')
 
-const { create, handle } = require('../lib/actions')
+const { createAll, handle } = require('../lib/actions')
 const redux = require('../lib/redux')
 
-const Action = {
-  Dec:   create('Dec'),
-  Inc:   create('Inc'),
-  Reset: create('Reset')
-}
+const Action = createAll([
+  'Dec',
+  'Inc',
+  'Reset'
+])
 
 const reducer = handle(0, {
   Dec:   dec,
