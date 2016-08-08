@@ -1,6 +1,10 @@
-const curry = require('ramda/src/curry')
-const m     = require('mithril')
-const tap   = require('ramda/src/tap')
+const compose = require('ramda/src/compose')
+const curry   = require('ramda/src/curry')
+const debug   = require('debug')
+const m       = require('mithril')
+const tap     = require('ramda/src/tap')
+
+exports.debug = label => compose(debug(label), JSON.stringify)
 
 exports.error = tap(console.error.bind(console))
 

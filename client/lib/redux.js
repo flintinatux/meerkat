@@ -1,16 +1,14 @@
-const compose = require('ramda/src/compose')
-const debug   = require('debug')
 const I = require('ramda/src/identity')
 const m = require('mithril')
 
-const { log, scan } = require('../lib/util')
+const { debug, scan } = require('../lib/util')
 
 const oninit = (reducer=I, async) => vnode => {
   const dispatch = m.prop(),
         state = scan(reducer, reducer(undefined, {}), dispatch)
 
-  dispatch.map(compose(debug('dispatch'), JSON.stringify))
-  state.map(compose(debug('state'), JSON.stringify))
+  dispatch.map(debug('dispatch'))
+  state.map(debug('state'))
 
   if (async) {
     dispatch.map(action => async(dispatch, action, state))
