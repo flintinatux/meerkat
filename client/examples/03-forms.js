@@ -1,68 +1,69 @@
 const assoc   = require('ramda/src/assoc')
 const compose = require('ramda/src/compose')
+const flip    = require('ramda/src/flip')
 const j2c     = require('j2c')
 const K       = require('ramda/src/always')
 const m       = require('mithril')
-const Type    = require('union-type')
 
-const component = require('../lib/component')
+const { createAll, handle } = require('../lib/actions')
 const { preventDefault, targetVal } = require('../lib/util')
+const redux = require('../lib/redux')
 
-const init = K({
-  age:       0,
+const initial = {
+  age:      0,
   confirm:  '',
   name:     '',
   password: '',
   validate: false
-})
+}
 
-const Msg = Type({
-  Age:      [ Number ],
-  Confirm:  [ String ],
-  Name:     [ String ],
-  Password: [ String ],
-  Validate: [ ]
-})
+const Action = createAll([
+  'Age',
+  'Confirm',
+  'Name',
+  'Password',
+  'Validate',
+])
 
-const update = Msg.caseOn({
-  Age:      assoc('age'),
-  Confirm:  assoc('confirm'),
-  Name:     assoc('name'),
-  Password: assoc('password'),
+const reducer = handle(initial, {
+  Age:      flip(assoc('age')),
+  Confirm:  flip(assoc('confirm')),
+  Name:     flip(assoc('name')),
+  Password: flip(assoc('password')),
   Validate: assoc('validate', true)
 })
 
-const view = (model, update) =>
+const view = (model, dispatch) =>
   m('form', {
     className: css.root,
-    onsubmit: compose(update, K(Msg.Validate()), preventDefault)
+    onsubmit: compose(dispatch, K(Action.Validate()), preventDefault)
   }, [
     m('style', css.toString()),
 
     m('input', {
       className: css.input,
-      oninput: compose(update, Msg.Name, targetVal),
+      oninput: compose(dispatch, Action.Name, targetVal),
       placeholder: 'Name',
       type: 'text'
     }),
 
     m('input', {
       className: css.input,
-      oninput: compose(update, Msg.Age, parseInt, targetVal),
+      oninput: compose(dispatch, Action.Age, parseInt, targetVal),
       placeholder: 'Age',
       type: 'number'
     }),
 
     m('input', {
       className: css.input,
-      oninput: compose(update, Msg.Password, targetVal),
+      oninput: compose(dispatch, Action.Password, targetVal),
       placeholder: 'Password',
       type: 'password'
     }),
 
     m('input', {
       className: css.input,
-      oninput: compose(update, Msg.Confirm, targetVal),
+      oninput: compose(dispatch, Action.Confirm, targetVal),
       placeholder: 'Confirm password',
       type: 'password'
     }),
@@ -92,7 +93,7 @@ const validation = model => {
   }, !errors.length ? 'OK' : errors.map(error => m('div', error)))
 }
 
-module.exports = component({ init, update, view })
+module.exports = redux({ reducer, view })
 
 const spacing = '1rem'
 
