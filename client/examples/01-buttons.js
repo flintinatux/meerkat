@@ -20,7 +20,7 @@ const reducer = handle(0, {
   Reset: K(0)
 })
 
-const view = (state, dispatch) =>
+const view = (dispatch, state) =>
   m('div', { className: css.root }, [
     m('style', css.toString()),
 

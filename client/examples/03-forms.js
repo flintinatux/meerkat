@@ -33,7 +33,7 @@ const reducer = handle(initial, {
   Validate: assoc('validate', true)
 })
 
-const view = (state, dispatch) =>
+const view = (dispatch, state) =>
   m('form', {
     className: css.root,
     onsubmit: compose(dispatch, K(Action.Validate()), preventDefault)
@@ -73,10 +73,10 @@ const view = (state, dispatch) =>
       type: 'submit'
     }, 'Submit'),
 
-    state.validate ? validation(state) : ''
+    state.validate ? validation(dispatch, state) : ''
   ])
 
-const validation = state => {
+const validation = (dispatch, state) => {
   const errors = [],
         { password, confirm } = state
 

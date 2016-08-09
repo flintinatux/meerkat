@@ -561,6 +561,11 @@
       "from": "create-hmac@>=1.1.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/create-hmac/-/create-hmac-1.1.4.tgz"
     },
+    "crocks": {
+      "version": "0.0.0",
+      "from": "evilsoft/crocks#master",
+      "resolved": "git://github.com/evilsoft/crocks.git#30a6ada1513f5863ffe71246141c82afdc24fa50"
+    },
     "cross-spawn": {
       "version": "4.0.0",
       "from": "cross-spawn@>=4.0.0 <5.0.0",

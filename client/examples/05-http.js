@@ -33,7 +33,7 @@ const async = handle({
       .fork(error, dispatch)
 })
 
-const view = (model, dispatch) =>
+const view = (dispatch, model) =>
   m('div', { className: css.root }, [
     m('style', css.toString()),
 

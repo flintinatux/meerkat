@@ -19,7 +19,7 @@ const oninit = (reducer=I, async) => vnode => {
 }
 
 const pure = view =>
-  ({ state: { dispatch, state } }) => view(state(), dispatch)
+  ({ state: { dispatch, state } }) => view(dispatch, state())
 
 module.exports = ({ async, reducer, view }) => ({
   oninit: oninit(reducer, async),

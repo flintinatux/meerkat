@@ -27,7 +27,7 @@ const async = handle({
 
 const roll = random => Math.ceil(random * 6)
 
-const view = (model, dispatch) =>
+const view = (dispatch, model) =>
   m('div', { className: css.root }, [
     m('style', css.toString()),
 

@@ -22,7 +22,7 @@ const reducer = handle(initial, {
   Reset:  assoc('content', '')
 })
 
-const view = (state, dispatch) =>
+const view = (dispatch, state) =>
   m('div', { className: css.root }, [
     m('style', css.toString()),
 
