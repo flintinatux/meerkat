@@ -1,27 +1,39 @@
 const I = require('ramda/src/identity')
-const m = require('mithril')
+const m = require('mithril/render/hyperscript')
+const renderService = require('mithril/render/render')
+const stream = require('mithril/util/stream')
 
 const { debug, scan } = require('../lib/util')
 
-const oninit = (reducer=I, async) => vnode => {
-  const dispatch = m.prop(),
+module.exports = (root, { async, reducer, view }) => {
+  const { render, setEventCallback } = renderService(window)
+
+  const redraw = state => render(root, view(m, state))
+
+  const dispatch = stream(),
         state = scan(reducer, reducer(undefined, {}), dispatch)
 
   dispatch.map(debug('dispatch'))
   state.map(debug('state'))
 
-  if (async) {
-    dispatch.map(action => async(dispatch, action, state))
-    state.map(m.redraw)
-  }
+  if (async) dispatch.map(action => async(dispatch, action, state))
 
-  vnode.state = { dispatch, state }
+  setEventCallback(dispatch)
+  state.map(redraw)
+
+  return function teardown() {
+    render(root, null)
+    dispatch.end(true)
+  }
 }
 
-const pure = view =>
-  ({ state: { dispatch, state } }) => view(dispatch, state())
+//   vnode.state = { dispatch, state }
+// }
 
-module.exports = ({ async, reducer, view }) => ({
-  oninit: oninit(reducer, async),
-  view:   pure(view)
-})
+// const pure = view =>
+//   ({ state: { dispatch, state } }) => view(dispatch, state())
+
+// module.exports = ({ async, reducer, view }) => ({
+//   oninit: oninit(reducer, async),
+//   view:   pure(view)
+// })
