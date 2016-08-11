@@ -2,12 +2,9 @@ const assoc   = require('ramda/src/assoc')
 const compose = require('ramda/src/compose')
 const flip    = require('ramda/src/flip')
 const j2c     = require('j2c')
-const K       = require('ramda/src/always')
-const m       = require('mithril')
 
-const { createAll, handle } = require('../lib/actions')
+const { action, h, handle } = require('../lib/redux')
 const { preventDefault, targetVal } = require('../lib/util')
-const redux = require('../lib/redux')
 
 const initial = {
   age:      0,
@@ -17,15 +14,7 @@ const initial = {
   validate: false
 }
 
-const Action = createAll([
-  'Age',
-  'Confirm',
-  'Name',
-  'Password',
-  'Validate',
-])
-
-const reducer = handle(initial, {
+exports.reducer = handle(initial, {
   Age:      flip(assoc('age')),
   Confirm:  flip(assoc('confirm')),
   Name:     flip(assoc('name')),
@@ -33,50 +22,60 @@ const reducer = handle(initial, {
   Validate: assoc('validate', true)
 })
 
-const view = (dispatch, state) =>
-  m('form', {
-    className: css.root,
-    onsubmit: compose(dispatch, K(Action.Validate()), preventDefault)
+exports.view = state =>
+  h('form', {
+    attrs: { class: css.root },
+    on: { submit: compose(action('Validate'), preventDefault) }
   }, [
-    m('style', css.toString()),
+    h('style', css.toString()),
 
-    m('input', {
-      className: css.input,
-      oninput: compose(dispatch, Action.Name, targetVal),
-      placeholder: 'Name',
-      type: 'text'
+    h('input', {
+      attrs: {
+        class: css.input,
+        placeholder: 'Name',
+        type: 'text'
+      },
+      on: { input: compose(action('Name'), targetVal) }
     }),
 
-    m('input', {
-      className: css.input,
-      oninput: compose(dispatch, Action.Age, parseInt, targetVal),
-      placeholder: 'Age',
-      type: 'number'
+    h('input', {
+      attrs: {
+        class: css.input,
+        placeholder: 'Age',
+        type: 'number'
+      },
+      on: { input: compose(action('Age'), parseInt, targetVal) }
     }),
 
-    m('input', {
-      className: css.input,
-      oninput: compose(dispatch, Action.Password, targetVal),
-      placeholder: 'Password',
-      type: 'password'
+    h('input', {
+      attrs: {
+        class: css.input,
+        placeholder: 'Password',
+        type: 'password'
+      },
+      on: { input: compose(action('Password'), targetVal) }
     }),
 
-    m('input', {
-      className: css.input,
-      oninput: compose(dispatch, Action.Confirm, targetVal),
-      placeholder: 'Confirm password',
-      type: 'password'
+    h('input', {
+      attrs: {
+        class: css.input,
+        placeholder: 'Confirm password',
+        type: 'password'
+      },
+      on: { input: compose(action('Confirm'), targetVal) }
     }),
 
-    m('button', {
-      className: css.btn,
-      type: 'submit'
+    h('button', {
+      attrs: {
+        class: css.btn,
+        type: 'submit'
+      }
     }, 'Submit'),
 
-    state.validate ? validation(dispatch, state) : ''
+    state.validate ? validation(state) : ''
   ])
 
-const validation = (dispatch, state) => {
+const validation = state => {
   const errors = [],
         { password, confirm } = state
 
@@ -88,12 +87,10 @@ const validation = (dispatch, state) => {
       !/[0-9]/.test(password))
     errors.push('Password must include uppercase, lowecase, and numeric chars')
 
-  return m('div', {
+  return h('div', {
     style: { color: !errors.length ? 'green' : 'red' }
-  }, !errors.length ? 'OK' : errors.map(error => m('div', error)))
+  }, !errors.length ? 'OK' : errors.map(error => h('div', error)))
 }
-
-module.exports = redux({ reducer, view })
 
 const spacing = '1rem'
 
