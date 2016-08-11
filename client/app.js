@@ -1,5 +1,5 @@
-const m = window.m = require('mithril')
+const redux = require('./lib/redux')
 
-const examples = require('./examples')
+const Main = require('./examples/01-buttons')
 
-m.route(document.body, '/01-buttons', examples)
+redux.mount(document.getElementById('root'), Main)

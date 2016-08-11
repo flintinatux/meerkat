@@ -1,39 +1,32 @@
-const I = require('ramda/src/identity')
-const m = require('mithril/render/hyperscript')
-const renderService = require('mithril/render/render')
-const stream = require('mithril/util/stream')
+const attrs    = require('snabbdom/modules/attributes')
+const flyd     = require('flyd')
+const snabbdom = require('snabbdom')
 
-const { debug, scan } = require('../lib/util')
+const { debug } = require('../lib/util')
+const events    = require('../lib/events')
 
-module.exports = (root, { async, reducer, view }) => {
-  const { render, setEventCallback } = renderService(window)
+const patcher = dispatch => snabbdom.init([ attrs, events(dispatch) ])
 
-  const redraw = state => render(root, view(m, state))
+exports.action = type => payload => ({ type, payload })
 
-  const dispatch = stream(),
-        state = scan(reducer, reducer(undefined, {}), dispatch)
+exports.h = require('snabbdom/h')
+
+exports.handle = (initial, reducers={}) =>
+  (state=initial, { type, payload }) =>
+    reducers[type] ? reducers[type](state, payload) : state
+
+exports.mount = (root, { reducer, view }) => {
+  const dispatch = flyd.stream(),
+        patch    = patcher(dispatch),
+        state    = flyd.scan(reducer, reducer(undefined, {}), dispatch),
+        vnode    = state.map(view),
+        app      = flyd.scan(patch, root, vnode)
 
   dispatch.map(debug('dispatch'))
   state.map(debug('state'))
 
-  if (async) dispatch.map(action => async(dispatch, action, state))
-
-  setEventCallback(dispatch)
-  state.map(redraw)
-
   return function teardown() {
-    render(root, null)
+    patch(root, '')
     dispatch.end(true)
   }
 }
-
-//   vnode.state = { dispatch, state }
-// }
-
-// const pure = view =>
-//   ({ state: { dispatch, state } }) => view(dispatch, state())
-
-// module.exports = ({ async, reducer, view }) => ({
-//   oninit: oninit(reducer, async),
-//   view:   pure(view)
-// })

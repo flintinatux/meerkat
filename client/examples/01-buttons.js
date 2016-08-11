@@ -1,52 +1,43 @@
-const compose = require('ramda/src/compose')
-const dec  = require('ramda/src/dec')
-const inc  = require('ramda/src/inc')
-const j2c  = require('j2c')
-const K    = require('ramda/src/always')
-const m    = require('mithril')
+const dec = require('ramda/src/dec')
+const inc = require('ramda/src/inc')
+const j2c = require('j2c')
+const K   = require('ramda/src/always')
 
-const { createAll, handle } = require('../lib/actions')
-const redux = require('../lib/redux')
+const { action, h, handle } = require('../lib/redux')
 
-const Action = createAll([
-  'Dec',
-  'Inc',
-  'Reset'
-])
-
-const reducer = handle(0, {
+exports.reducer = handle(0, {
   Dec:   dec,
   Inc:   inc,
   Reset: K(0)
 })
 
-const view = (dispatch, state) =>
-  m('div', { className: css.root }, [
-    m('style', css.toString()),
+exports.view = state =>
+  h('div', { attrs: { class: css.root } }, [
+    h('style', css.toString()),
 
-    m('button', {
-      className: css.btn,
-      onclick: compose(dispatch, K(Action.Reset()))
+    h('button', {
+      attrs: { class: css.btn },
+      on: { click: action('Reset') }
     }, 'Reset'),
 
-    m('button', {
-      className: css.btn,
-      onclick: compose(dispatch, K(Action.Dec()))
+    h('button', {
+      attrs: { class: css.btn },
+      on: { click: action('Dec') }
     }, '-'),
 
-    m('input', {
-      className: css.input,
-      disabled: true,
-      value: state
+    h('input', {
+      attrs: {
+        class: css.input,
+        disabled: true,
+        value: state
+      }
     }),
 
-    m('button', {
-      className: css.btn,
-      onclick: compose(dispatch, K(Action.Inc()))
+    h('button', {
+      attrs: { class: css.btn },
+      on: { click: action('Inc') }
     }, '+'),
   ])
-
-module.exports = redux({ reducer, view })
 
 const css = j2c.sheet({
   '.btn': {
