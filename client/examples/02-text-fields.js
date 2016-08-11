@@ -2,54 +2,48 @@ const assoc   = require('ramda/src/assoc')
 const compose = require('ramda/src/compose')
 const flip    = require('ramda/src/flip')
 const j2c     = require('j2c')
-const K       = require('ramda/src/always')
-const m       = require('mithril')
 const reverse = require('ramda/src/reverse')
 
-const { createAll, handle } = require('../lib/actions')
-const redux = require('../lib/redux')
+const { action, h, handle } = require('../lib/redux')
 const { targetVal } = require('../lib/util')
 
 const initial = { content: '' }
 
-const Action = createAll([
-  'Change',
-  'Reset'
-])
-
-const reducer = handle(initial, {
+exports.reducer = handle(initial, {
   Change: flip(assoc('content')),
   Reset:  assoc('content', '')
 })
 
-const view = (dispatch, state) =>
-  m('div', { className: css.root }, [
-    m('style', css.toString()),
+exports.view = state =>
+  h('div', { attrs: { class: css.root } }, [
+    h('style', css.toString()),
 
-    m('button', {
-      className: css.btn,
-      onclick: compose(dispatch, K(Action.Reset()))
+    h('button', {
+      attrs: { class: css.btn },
+      on: { click: action('Reset') }
     }, 'Reset'),
 
-    m('input', {
-      className: css.input,
-      autofocus: true,
-      oninput: compose(dispatch, Action.Change, targetVal),
-      placeholder: 'Text to reverse',
-      value: state.content
+    h('input', {
+      attrs: {
+        class: css.input,
+        autofocus: true,
+        placeholder: 'Text to reverse'
+      },
+      on: { input: compose(action('Change'), targetVal) },
+      props: { value: state.content }
     }),
 
-    m('span', { className: css.arrow }, '<=>'),
+    h('span', { attrs: { class: css.arrow } }, '<=>'),
 
-    m('input', {
-      className: [css.input, css.reverse].join(' '),
-      disabled: true,
-      placeholder: 'Reversed result',
-      value: reverse(state.content)
+    h('input', {
+      attrs: {
+        class: [css.input, css.reverse].join(' '),
+        disabled: true,
+        placeholder: 'Reversed result'
+      },
+      props: { value: reverse(state.content) }
     })
   ])
-
-module.exports = redux({ reducer, view })
 
 const spacing = '2rem'
 

@@ -1,11 +1,12 @@
 const attrs    = require('snabbdom/modules/attributes')
 const flyd     = require('flyd')
+const props    = require('snabbdom/modules/props')
 const snabbdom = require('snabbdom')
 
 const { debug } = require('../lib/util')
 const events    = require('../lib/events')
 
-const patcher = dispatch => snabbdom.init([ attrs, events(dispatch) ])
+const patcher = dispatch => snabbdom.init([ attrs, events(dispatch), props ])
 
 exports.action = type => payload => ({ type, payload })
 

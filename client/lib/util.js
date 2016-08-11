@@ -2,6 +2,7 @@ const compose = require('ramda/src/compose')
 const curry   = require('ramda/src/curry')
 const debug   = require('debug')
 const flyd    = require('flyd')
+const path    = require('ramda/src/path')
 const tap     = require('ramda/src/tap')
 
 exports.debug = label => compose(debug(label), JSON.stringify)
@@ -21,8 +22,6 @@ exports.scan = function(fn, acc, s) {
   return ns
 }
 
-exports.targetVal = e => e.target.value
-
-exports.typeEq = curry((prop, type, x) => typeof x[prop] === type)
+exports.targetVal = path(['target', 'value'])
 
 const Task = require('./task')

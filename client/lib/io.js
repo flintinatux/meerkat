@@ -8,8 +8,6 @@ const IO = runIO => ({
   runIO
 })
 
-IO.is = typeEq('runIO', 'function')
-
 IO.of = x => IO(K(x))
 
 module.exports = IO

@@ -29,8 +29,8 @@ exports.view = state =>
       attrs: {
         class: css.input,
         disabled: true,
-        value: state
-      }
+      },
+      props: { value: state }
     }),
 
     h('button', {
