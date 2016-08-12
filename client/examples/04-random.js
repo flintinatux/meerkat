@@ -3,43 +3,34 @@ const compose = require('ramda/src/compose')
 const flip    = require('ramda/src/flip')
 const j2c     = require('j2c')
 const K       = require('ramda/src/always')
-const m       = require('mithril')
 
-const { createAll, handle } = require('../lib/actions')
+const { action, h, handle } = require('../lib/redux')
 const IO = require('../lib/io')
-const redux = require('../lib/redux')
 
 const initial = { face: 1 }
 
-const Action = createAll([
-  'Face',
-  'Roll'
-])
+const roll = random => Math.ceil(random * 6)
 
-const reducer = handle(initial, {
+exports.async = handle({
+  Roll: dispatch =>
+    IO(Math.random).map(compose(dispatch, action('Face'), roll)).runIO()
+})
+
+exports.reducer = handle(initial, {
   Face: flip(assoc('face'))
 })
 
-const async = handle({
-  Roll: dispatch =>
-    IO(Math.random).map(compose(dispatch, Action.Face, roll)).runIO()
-})
+exports.view = state =>
+  h('div', { attrs: { class: css.root } }, [
+    h('style', css.toString()),
 
-const roll = random => Math.ceil(random * 6)
+    h('h1', { attrs: { class: css.face } }, state.face),
 
-const view = (dispatch, model) =>
-  m('div', { className: css.root }, [
-    m('style', css.toString()),
-
-    m('h1', { className: css.face }, model.face),
-
-    m('button', {
-      className: css.btn,
-      onclick: compose(dispatch, K(Action.Roll())),
+    h('button', {
+      attrs: { class: css.btn },
+      on: { click: action('Roll') }
     }, 'Roll')
   ])
-
-module.exports = redux({ async, reducer, view })
 
 const spacing = '1rem'
 

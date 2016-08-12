@@ -1,11 +1,10 @@
 const compose = require('ramda/src/compose')
-const curry   = require('ramda/src/curry')
 const debug   = require('debug')
 const flyd    = require('flyd')
 const path    = require('ramda/src/path')
 const tap     = require('ramda/src/tap')
 
-exports.debug = label => compose(debug(label), JSON.stringify)
+exports.debug = label => tap(compose(debug(label), JSON.stringify))
 
 exports.error = tap(console.error.bind(console))
 

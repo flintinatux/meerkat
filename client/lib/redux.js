@@ -7,29 +7,31 @@ const style    = require('snabbdom/modules/style')
 const { debug } = require('../lib/util')
 const events    = require('../lib/events')
 
-const patcher = dispatch =>
+const patch = dispatch =>
   snabbdom.init([ attrs, events(dispatch), props, style ])
 
 exports.action = type => payload => ({ type, payload })
 
 exports.h = require('snabbdom/h')
 
-exports.handle = (initial, reducers={}) =>
-  (state=initial, { type, payload }) =>
-    reducers[type] ? reducers[type](state, payload) : state
+exports.handle = (initial, reducers) => {
+  if (reducers === undefined) [reducers, initial] = [initial, null]
+  return (state=initial, { type, payload }, getState) =>
+    reducers[type] ? reducers[type](state, payload, getState) : state
+}
 
-exports.mount = (root, { reducer, view }) => {
+exports.mount = (root, { async, reducer, view }) => {
   const dispatch = flyd.stream(),
-        patch    = patcher(dispatch),
-        state    = flyd.scan(reducer, reducer(undefined, {}), dispatch),
+        actions  = dispatch.map(debug('dispatch')),
+        state    = flyd.scan(reducer, reducer(undefined, {}), actions),
         vnode    = state.map(view),
-        app      = flyd.scan(patch, root, vnode)
+        app      = flyd.scan(patch(dispatch), root, vnode)
 
-  dispatch.map(debug('dispatch'))
   state.map(debug('state'))
+  if (async) actions.map(action => async(dispatch, action, state))
 
   return function teardown() {
-    patch(root, '')
+    patch(dispatch)(root, '')
     dispatch.end(true)
   }
 }
