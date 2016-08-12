@@ -16,12 +16,9 @@ const initial = {
   gif:   'https://goo.gl/RYb70Z'
 }
 
-exports.async = handle({
-  More: (dispatch, topic) =>
-    request({ method: 'GET', url: giphyUri + topic, json: true })
-      .map(compose(action('Gif'), path(['data', 'image_url'])))
-      .fork(error, dispatch)
-})
+const gif = topic =>
+  request({ method: 'GET', url: giphyUri + topic, json: true })
+    .map(path(['data', 'image_url']))
 
 exports.reducer = handle(initial, {
   Gif: flip(assoc('gif'))
@@ -42,7 +39,7 @@ exports.view = state =>
 
     h('button', {
       attrs: { class: css.btn },
-      on: { click: compose(action('More'), K(state.topic)) }
+      on: { click: compose(action('Gif'), gif, K(state.topic)) }
     }, 'More please!')
   ])
 

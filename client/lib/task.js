@@ -7,6 +7,8 @@ const Task = fork => ({
   map: f => Task((rej, res) => fork(rej, compose(res, f)))
 })
 
+Task.is = typeEq('fork', 'function')
+
 Task.of = x => Task((rej, res) => res(x))
 
 module.exports = Task

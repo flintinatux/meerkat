@@ -4,8 +4,9 @@ const { init } = require('snabbdom')
 const props    = require('snabbdom/modules/props')
 const style    = require('snabbdom/modules/style')
 
-const { debug } = require('../lib/util')
-const events    = require('../lib/events')
+const { debug, error } = require('./util')
+const events = require('./events')
+const Task   = require('./task')
 
 const patch = dispatch => init([ attrs, events(dispatch), props, style ])
 
@@ -19,15 +20,21 @@ exports.handle = (initial, reducers) => {
     reducers[type] ? reducers[type](state, payload, getState) : state
 }
 
-exports.mount = (root, { async, reducer, view }) => {
+exports.mount = (root, { reducer, view }) => {
   const dispatch = flyd.stream(),
-        actions  = dispatch.map(debug('dispatch')),
-        state    = flyd.scan(reducer, reducer(undefined, {}), actions),
-        vnode    = state.map(view),
-        app      = flyd.scan(patch(dispatch), root, vnode)
+        action   = dispatch.map(debug('dispatch'))
+
+  const state = flyd.combine((action, self) => {
+    const { type, payload } = action()
+    if (!Task.is(payload)) return reducer(self(), action())
+    payload.map(exports.action(type)).fork(error, dispatch)
+  }, [action])
 
   state.map(debug('state'))
-  if (async) actions.map(action => async(dispatch, action, state))
+  state(reducer(undefined, {}))
+
+  const vnode = state.map(view),
+        app   = flyd.scan(patch(dispatch), root, vnode)
 
   return function teardown() {
     patch(dispatch)(root, '')

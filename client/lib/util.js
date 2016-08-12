@@ -1,3 +1,4 @@
+const curry   = require('ramda/src/curry')
 const compose = require('ramda/src/compose')
 const debug   = require('debug')
 const flyd    = require('flyd')
@@ -19,3 +20,5 @@ exports.scan = function(fn, acc, s) {
 }
 
 exports.targetVal = path(['target', 'value'])
+
+exports.typeEq = curry((prop, type, x) => typeof x[prop] === type)

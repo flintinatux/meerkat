@@ -2,18 +2,16 @@ const assoc   = require('ramda/src/assoc')
 const compose = require('ramda/src/compose')
 const flip    = require('ramda/src/flip')
 const j2c     = require('j2c')
+const K       = require('ramda/src/always')
 
 const { action, h, handle } = require('../lib/redux')
 const IO = require('../lib/io')
 
 const initial = { face: 1 }
 
-const roll = random => Math.ceil(random * 6)
+const toFace = x => Math.ceil(x * 6)
 
-exports.async = handle({
-  Roll: dispatch =>
-    IO(Math.random).map(compose(dispatch, action('Face'), roll)).runIO()
-})
+const roll = IO(Math.random).map(toFace)
 
 exports.reducer = handle(initial, {
   Face: flip(assoc('face'))
@@ -27,7 +25,7 @@ exports.view = state =>
 
     h('button', {
       attrs: { class: css.btn },
-      on: { click: action('Roll') }
+      on: { click: compose(action('Face'), IO.runIO, K(roll)) }
     }, 'Roll')
   ])
 
