@@ -2,7 +2,6 @@ const assoc   = require('ramda/src/assoc')
 const compose = require('ramda/src/compose')
 const flip    = require('ramda/src/flip')
 const j2c     = require('j2c')
-const K       = require('ramda/src/always')
 
 const { action, h, handle } = require('../lib/redux')
 const IO = require('../lib/io')

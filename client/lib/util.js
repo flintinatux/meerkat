@@ -12,9 +12,6 @@ exports.log = tap(console.log.bind(console))
 
 exports.preventDefault = e => e.preventDefault()
 
-exports.request = opts =>
-  Task((rej, res) => m.request(opts).map(res).catch(rej))
-
 exports.scan = function(fn, acc, s) {
   const ns = flyd.combine(s => acc = fn(acc, s()), [s])
   ns(ns() || acc)
@@ -22,5 +19,3 @@ exports.scan = function(fn, acc, s) {
 }
 
 exports.targetVal = path(['target', 'value'])
-
-const Task = require('./task')

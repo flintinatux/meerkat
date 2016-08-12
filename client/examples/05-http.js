@@ -3,12 +3,11 @@ const compose = require('ramda/src/compose')
 const flip    = require('ramda/src/flip')
 const j2c     = require('j2c')
 const K       = require('ramda/src/always')
-const m       = require('mithril')
-const prop    = require('ramda/src/prop')
+const path    = require('ramda/src/path')
 
-const { createAll, handle } = require('../lib/actions')
-const { error, log, request } = require('../lib/util')
-const redux = require('../lib/redux')
+const { action, h, handle } = require('../lib/redux')
+const { error, log } = require('../lib/util')
+const request = require('../lib/request')
 
 const giphyUri = 'https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag='
 
@@ -17,40 +16,35 @@ const initial = {
   gif:   'https://goo.gl/RYb70Z'
 }
 
-const Action = createAll([
-  'Gif',
-  'More'
-])
-
-const reducer = handle(initial, {
-  Gif: flip(assoc('gif'))
-})
-
-const async = handle({
+exports.async = handle({
   More: (dispatch, topic) =>
-    request({ method: 'GET', url: giphyUri + topic })
-      .map(compose(Action.Gif, prop('image_url'), prop('data')))
+    request({ method: 'GET', url: giphyUri + topic, json: true })
+      .map(compose(action('Gif'), path(['data', 'image_url'])))
       .fork(error, dispatch)
 })
 
-const view = (dispatch, model) =>
-  m('div', { className: css.root }, [
-    m('style', css.toString()),
+exports.reducer = handle(initial, {
+  Gif: flip(assoc('gif'))
+})
 
-    m('h2', { className: css.topic }, model.topic),
+exports.view = state =>
+  h('div', { attrs: { class: css.root } }, [
+    h('style', css.toString()),
 
-    m('img', {
-      className: css.image,
-      src: model.gif
+    h('h2', { attrs: { class: css.topic } }, state.topic),
+
+    h('img', {
+      attrs: {
+        class: css.image,
+        src: state.gif
+      }
     }),
 
-    m('button', {
-      className: css.btn,
-      onclick: compose(dispatch, Action.More, K(model.topic))
+    h('button', {
+      attrs: { class: css.btn },
+      on: { click: compose(action('More'), K(state.topic)) }
     }, 'More please!')
   ])
-
-module.exports = redux({ async, reducer, view })
 
 const spacing = '1rem'
 
