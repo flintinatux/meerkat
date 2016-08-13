@@ -10,16 +10,16 @@ const request = require('../lib/request')
 
 const giphyUri = 'https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag='
 
-const initial = {
+const init = K({
   topic: 'cats',
   gif:   'https://goo.gl/RYb70Z'
-}
+})
 
 const gif = topic =>
   request({ method: 'GET', url: giphyUri + topic, json: true })
     .map(path(['data', 'image_url']))
 
-exports.reducer = handle(initial, {
+exports.reducer = handle(init, {
   Gif: flip(assoc('gif'))
 })
 

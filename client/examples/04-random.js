@@ -7,13 +7,13 @@ const K       = require('ramda/src/always')
 const { action, h, handle } = require('../lib/redux')
 const IO = require('../lib/io')
 
-const initial = { face: 1 }
+const init = K({ face: 1 })
 
-const roll = IO(Math.random).map(x => Math.ceil(x * 6))
-
-exports.reducer = handle(initial, {
+exports.reducer = handle(init, {
   Face: flip(assoc('face'))
 })
+
+const roll = IO(Math.random).map(x => Math.ceil(x * 6))
 
 exports.view = state =>
   h('div', { attrs: { class: css.root } }, [

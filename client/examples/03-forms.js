@@ -2,19 +2,20 @@ const assoc   = require('ramda/src/assoc')
 const compose = require('ramda/src/compose')
 const flip    = require('ramda/src/flip')
 const j2c     = require('j2c')
+const K       = require('ramda/src/always')
 
 const { action, h, handle } = require('../lib/redux')
 const { preventDefault, targetVal } = require('../lib/util')
 
-const initial = {
+const init = K({
   age:      0,
   confirm:  '',
   name:     '',
   password: '',
   validate: false
-}
+})
 
-exports.reducer = handle(initial, {
+exports.reducer = handle(init, {
   Age:      flip(assoc('age')),
   Confirm:  flip(assoc('confirm')),
   Name:     flip(assoc('name')),

@@ -29,8 +29,8 @@ const action = exports.action = curry((type, payload) => ({ type, payload }))
 
 exports.h = require('snabbdom/h')
 
-exports.handle = (initial, reducers) =>
-  (state=initial, { type, payload }) =>
+exports.handle = (init, reducers) =>
+  (state=init(), { type, payload }) =>
     reducers[type] ? reducers[type](state, payload) : state
 
 exports.mount = (root, { reducer, view }) => {

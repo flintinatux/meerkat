@@ -5,7 +5,9 @@ const K   = require('ramda/src/always')
 
 const { action, h, handle } = require('../lib/redux')
 
-exports.reducer = handle(0, {
+const init = K(0)
+
+exports.reducer = handle(init, {
   Dec:   dec,
   Inc:   inc,
   Reset: K(0)
