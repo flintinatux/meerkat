@@ -6,7 +6,6 @@ const K       = require('ramda/src/always')
 const path    = require('ramda/src/path')
 
 const { action, h, handle } = require('../lib/redux')
-const { error, log } = require('../lib/util')
 const request = require('../lib/request')
 
 const giphyUri = 'https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag='

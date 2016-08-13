@@ -1,5 +1,7 @@
 const attrs    = require('snabbdom/modules/attributes')
+const classes  = require('snabbdom/modules/class')
 const compose  = require('ramda/src/compose')
+const curry    = require('ramda/src/curry')
 const flyd     = require('flyd')
 const { init } = require('snabbdom')
 const props    = require('snabbdom/modules/props')
@@ -7,8 +9,10 @@ const style    = require('snabbdom/modules/style')
 
 const { debug, error } = require('./util')
 const events = require('./events')
+const subs   = require('./subscriptions')
 
-const patch = dispatch => init([ attrs, events(dispatch), props, style ])
+const patch = dispatch =>
+  init([ attrs, classes, events(dispatch), props, style, subs(dispatch) ])
 
 const reduceWithAsync = reducer => (dispatch, state) => {
   const { type, payload } = dispatch()
@@ -21,7 +25,7 @@ const reduceWithAsync = reducer => (dispatch, state) => {
   }
 }
 
-const action = exports.action = type => payload => ({ type, payload })
+const action = exports.action = curry((type, payload) => ({ type, payload }))
 
 exports.h = require('snabbdom/h')
 
