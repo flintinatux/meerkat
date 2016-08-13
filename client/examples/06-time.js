@@ -27,7 +27,7 @@ exports.view = state =>
     },
     subs: { create: startTicking }
   }, [
-    h('circle', { attrs: { cx: '50', cy: '50', r: '45', fill: '#0B79CE' } }),
+    h('circle', { attrs: { cx: '50', cy: '50', r: '45', fill: '#ddd' } }),
 
     h('line', {
       attrs: {

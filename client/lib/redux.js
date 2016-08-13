@@ -36,9 +36,9 @@ exports.handle = (init, reducers) =>
 exports.mount = (root, { reducer, view }) => {
   const dispatch = flyd.stream()
   const state = flyd.combine(reduceWithAsync(reducer), [dispatch])
+  state(reducer(undefined, {}))
   dispatch.map(debug('dispatch'))
   state.map(debug('state'))
-  state(reducer(undefined, {}))
   flyd.scan(patch(dispatch), root, state.map(view))
 
   return function teardown() {
