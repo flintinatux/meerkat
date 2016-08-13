@@ -9,9 +9,7 @@ const IO = require('../lib/io')
 
 const initial = { face: 1 }
 
-const toFace = x => Math.ceil(x * 6)
-
-const roll = IO(Math.random).map(toFace)
+const roll = IO(Math.random).map(x => Math.ceil(x * 6))
 
 exports.reducer = handle(initial, {
   Face: flip(assoc('face'))

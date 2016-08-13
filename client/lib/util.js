@@ -20,5 +20,3 @@ exports.scan = function(fn, acc, s) {
 }
 
 exports.targetVal = path(['target', 'value'])
-
-exports.typeEq = curry((prop, type, x) => typeof x[prop] === type)

@@ -1,4 +1,5 @@
 const attrs    = require('snabbdom/modules/attributes')
+const compose  = require('ramda/src/compose')
 const flyd     = require('flyd')
 const { init } = require('snabbdom')
 const props    = require('snabbdom/modules/props')
@@ -6,35 +7,35 @@ const style    = require('snabbdom/modules/style')
 
 const { debug, error } = require('./util')
 const events = require('./events')
-const Task   = require('./task')
 
 const patch = dispatch => init([ attrs, events(dispatch), props, style ])
 
-exports.action = type => payload => ({ type, payload })
+const reduceWithAsync = reducer => (dispatch, state) => {
+  const { type, payload } = dispatch()
+  if (typeof payload.fork === 'function') {
+    payload.map(action(type)).fork(error, dispatch)
+  } else if (typeof payload.then === 'function') {
+    payload.then(action(type)).then(dispatch).catch(error)
+  } else {
+    return reducer(state(), dispatch())
+  }
+}
+
+const action = exports.action = type => payload => ({ type, payload })
 
 exports.h = require('snabbdom/h')
 
-exports.handle = (initial, reducers) => {
-  if (reducers === undefined) [reducers, initial] = [initial, null]
-  return (state=initial, { type, payload }, getState) =>
-    reducers[type] ? reducers[type](state, payload, getState) : state
-}
+exports.handle = (initial, reducers) =>
+  (state=initial, { type, payload }) =>
+    reducers[type] ? reducers[type](state, payload) : state
 
 exports.mount = (root, { reducer, view }) => {
-  const dispatch = flyd.stream(),
-        action   = dispatch.map(debug('dispatch'))
-
-  const state = flyd.combine((action, self) => {
-    const { type, payload } = action()
-    if (!Task.is(payload)) return reducer(self(), action())
-    payload.map(exports.action(type)).fork(error, dispatch)
-  }, [action])
-
+  const dispatch = flyd.stream()
+  const state = flyd.combine(reduceWithAsync(reducer), [dispatch])
+  dispatch.map(debug('dispatch'))
   state.map(debug('state'))
   state(reducer(undefined, {}))
-
-  const vnode = state.map(view),
-        app   = flyd.scan(patch(dispatch), root, vnode)
+  flyd.scan(patch(dispatch), root, state.map(view))
 
   return function teardown() {
     patch(dispatch)(root, '')
