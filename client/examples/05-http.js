@@ -11,16 +11,23 @@ const request = require('../lib/request')
 const giphyUri = 'https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag='
 
 const init = K({
-  topic: 'cats',
-  gif:   'https://goo.gl/RYb70Z'
+  gif:     'https://goo.gl/RYb70Z',
+  loading: true,
+  topic:   'cats'
 })
 
 const gif = topic =>
   request({ method: 'GET', url: giphyUri + topic, json: true })
     .map(path(['data', 'image_url']))
 
+const more = topic => dispatch => {
+  dispatch(action('Loading', true))
+  dispatch(action('Gif', gif(topic)))
+}
+
 exports.reducer = handle(init, {
-  Gif: flip(assoc('gif'))
+  Gif:     flip(assoc('gif')),
+  Loading: flip(assoc('loading'))
 })
 
 exports.view = state =>
@@ -29,17 +36,21 @@ exports.view = state =>
 
     h('h2', { attrs: { class: css.topic } }, state.topic),
 
+    h('button', {
+      attrs: {
+        class: css.btn,
+        disabled: state.loading
+      },
+      on: { click: K(more(state.topic)) }
+    }, state.loading ? 'Loading...' : 'More please!'),
+
     h('img', {
       attrs: {
         class: css.image,
         src: state.gif
-      }
-    }),
-
-    h('button', {
-      attrs: { class: css.btn },
-      on: { click: compose(action('Gif'), gif, K(state.topic)) }
-    }, 'More please!')
+      },
+      on: { load: K(action('Loading', false)) }
+    })
   ])
 
 const spacing = '1rem'

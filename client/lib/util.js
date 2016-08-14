@@ -4,7 +4,10 @@ const flyd    = require('flyd')
 const path    = require('ramda/src/path')
 const tap     = require('ramda/src/tap')
 
-exports.debug = label => tap(compose(debug(label), JSON.stringify))
+const stringify = x =>
+  typeof x === 'function' ? x.toString() : JSON.stringify(x)
+
+exports.debug = label => tap(compose(debug(label), stringify))
 
 exports.error = tap(console.error.bind(console))
 
