@@ -1,6 +1,7 @@
 const assoc   = require('ramda/src/assoc')
 const compose = require('ramda/src/compose')
 const flip    = require('ramda/src/flip')
+const K       = require('ramda/src/always')
 const objOf   = require('ramda/src/objOf')
 const prop    = require('ramda/src/prop')
 
@@ -25,7 +26,7 @@ exports.view = state =>
       viewBox: '0 0 100 100',
       width: '300px'
     },
-    subs: { create: startTicking }
+    dispatch: { create: K(startTicking) }
   }, [
     h('circle', { attrs: { cx: '50', cy: '50', r: '45', fill: '#ddd' } }),
 

@@ -10,7 +10,7 @@ const style    = require('snabbdom/modules/style')
 
 const { debug, error } = require('./util')
 const events = require('./events')
-const subs   = require('./subscriptions')
+const hooks  = require('./hooks')
 
 const action = exports.action = curry((type, payload) => ({ type, payload }))
 
@@ -35,7 +35,7 @@ exports.mount = (root, { reducer, view }) => {
 }
 
 const patch = dispatch =>
-  init([ attrs, classes, events(dispatch), props, style, subs(dispatch) ])
+  init([ attrs, classes, events(dispatch), props, style, hooks(dispatch) ])
 
 const reduceWith = reducer => (dispatch, state) => {
   if (typeof dispatch() === 'function') {
