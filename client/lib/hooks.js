@@ -1,5 +1,5 @@
-const invoke = ({ data: { dispatch: hooks } }, hook, dispatch) =>
-  hooks && typeof hooks[hook] === 'function' && dispatch(hooks[hook]())
+const invoke = ({ data: { redux } }, hook, dispatch) =>
+  redux && typeof redux[hook] === 'function' && dispatch(redux[hook]())
 
 module.exports = dispatch => ({
   create:  (_, vnode) => invoke(vnode, 'create', dispatch),
