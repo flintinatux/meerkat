@@ -7,6 +7,7 @@ const path    = require('ramda/src/path')
 
 const { action, h, handle } = require('../lib/redux')
 const request = require('../lib/request')
+const { preventDefault, targetVal } = require('../lib/util')
 
 const giphyUri = 'https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag='
 
@@ -27,22 +28,36 @@ const more = topic => dispatch => {
 
 exports.reducer = handle(init, {
   Gif:     flip(assoc('gif')),
-  Loading: flip(assoc('loading'))
+  Loading: flip(assoc('loading')),
+  Topic:   flip(assoc('topic'))
 })
 
 exports.view = state =>
   h('div', { attrs: { class: css.root } }, [
     h('style', css.toString()),
 
-    h('h2', { attrs: { class: css.topic } }, state.topic),
+    h('form', {
+      attrs: { class: css.form },
+      on: { submit: compose(K(more(state.topic)), preventDefault) }
+    }, [
+      h('input', {
+        attrs: {
+          class: css.input,
+          placeholder: 'Topic',
+          type: 'text'
+        },
+        on: { input: compose(action('Topic'), targetVal) },
+        props: { value: state.topic }
+      }),
 
-    h('button', {
-      attrs: {
-        class: css.btn,
-        disabled: state.loading
-      },
-      on: { click: K(more(state.topic)) }
-    }, state.loading ? 'Loading...' : 'More please!'),
+      h('button', {
+        attrs: {
+          class: css.btn,
+          disabled: state.loading,
+          type: 'submit'
+        }
+      }, state.loading ? 'Loading...' : 'More please!')
+    ]),
 
     h('img', {
       attrs: {
@@ -58,11 +73,10 @@ const spacing = '1rem'
 const css = j2c.sheet({
   '.btn': {
     background: '#fff',
-    border: '0.1rem solid #ccc',
+    border: '0.1rem solid #01f',
     borderRadius: '0.2rem',
     cursor: 'pointer',
     display: 'block',
-    marginBottom: spacing,
     outline: 'none',
     padding: '0.8rem 1.2rem',
     width: '15rem',
@@ -72,9 +86,23 @@ const css = j2c.sheet({
     }
   },
 
+  '.form': {
+    display: 'flex',
+    marginBottom: spacing
+  },
+
   '.image': {
     display: 'block',
     marginBottom: spacing
+  },
+
+  '.input': {
+    border: '0.1rem solid #ccc',
+    borderRadius: '0.2rem',
+    marginRight: spacing,
+    outline: 'none',
+    padding: '0.8rem 1.2rem',
+    width: '20rem'
   },
 
   '.root': {
