@@ -5,7 +5,7 @@ const path    = require('ramda/src/path')
 const tap     = require('ramda/src/tap')
 
 const stringify = x =>
-  typeof x === 'function' ? x.toString() : JSON.stringify(x)
+  typeof x === 'function' ? `[function ${x.name}]` : JSON.stringify(x)
 
 exports.debug = label => tap(compose(debug(label), stringify))
 

@@ -26,7 +26,7 @@ exports.view = state =>
       viewBox: '0 0 100 100',
       width: '300px'
     },
-    redux: { create: K(startTicking) }
+    redux: { create: startTicking }
   }, [
     h('circle', { attrs: { cx: '50', cy: '50', r: '45', fill: '#ddd' } }),
 

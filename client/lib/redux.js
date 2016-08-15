@@ -3,8 +3,9 @@ const classes  = require('snabbdom/modules/class')
 const compose  = require('ramda/src/compose')
 const curry    = require('ramda/src/curry')
 const flyd     = require('flyd')
+const I        = require('ramda/src/identity')
 const { init } = require('snabbdom')
-const K        = require('ramda/src/always')
+const mapObj   = require('ramda/src/mapObjIndexed')
 const props    = require('snabbdom/modules/props')
 const style    = require('snabbdom/modules/style')
 
@@ -14,13 +15,16 @@ const hooks  = require('./hooks')
 
 const action = exports.action = curry((type, payload) => ({ type, payload }))
 
+exports.combine = reducers => (state={}, action) =>
+  mapObj((reducer, key) => reducer(state[key], action), reducers)
+
 exports.h = require('snabbdom/h')
 
 exports.handle = (init, reducers) =>
   (state=init(), { type, payload }) =>
     reducers[type] ? reducers[type](state, payload) : state
 
-exports.mount = (root, { reducer, view }) => {
+exports.mount = (root, { reducer=I, view }) => {
   const dispatch = flyd.stream()
   const state = flyd.combine(reduceWith(reducer), [dispatch])
   state(reducer(undefined, {}))
