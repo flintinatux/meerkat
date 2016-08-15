@@ -1,36 +1,26 @@
-const append  = require('ramda/src/append')
-const assoc   = require('ramda/src/assoc')
 const compose = require('ramda/src/compose')
-const flip    = require('ramda/src/flip')
-const I       = require('ramda/src/identity')
 const idgen   = require('idgen')
 const j2c     = require('j2c')
 const K       = require('ramda/src/always')
-const merge   = require('ramda/src/merge')
 const prop    = require('ramda/src/prop')
 const trim    = require('ramda/src/trim')
 
 const { action, combine, h, handle } = require('../lib/redux')
+const { list, mapList } = require('../lib/list')
 const { preventDefault, targetVal }  = require('../lib/util')
 
 const socket = new WebSocket('ws://echo.websocket.org')
 
-const body = handle(K(''), {
+const body = handle('', {
   Body: (_, body) => body
 })
 
-const messages = handle(K({}), {
-  NewMessage: (state, msg) => assoc(msg.id, msg, state)
-})
+const messages = list('Message')
 
-const messageIds = handle(K([]), {
-  NewMessage: (state, msg) => append(msg.id, state)
-})
-
-exports.reducer = combine({ body, messages, messageIds })
+exports.reducer = combine({ body, messages })
 
 const listen = dispatch =>
-  socket.onmessage = compose(dispatch, action('NewMessage'), JSON.parse, prop('data'))
+  socket.onmessage = compose(dispatch, action('InsertMessage'), JSON.parse, prop('data'))
 
 const send = body => socket.send(JSON.stringify({ id: idgen(), body }))
 
@@ -41,10 +31,8 @@ exports.view = state =>
     h('div', {
       attrs: { class: css.messages },
       redux: { create: listen }
-    }, state.messageIds.map(id =>
-      h('div', {
-        attrs: { class: css.message }
-      }, state.messages[id].body)
+    }, mapList(state.messages, msg =>
+      h('div', { attrs: { class: css.message } }, msg.body)
     )),
 
     h('form', {

@@ -21,7 +21,7 @@ exports.combine = reducers => (state={}, action) =>
 exports.h = require('snabbdom/h')
 
 exports.handle = (init, reducers) =>
-  (state=init(), { type, payload }) =>
+  (state=init, { type, payload }) =>
     reducers[type] ? reducers[type](state, payload) : state
 
 exports.mount = (root, { reducer=I, view }) => {
