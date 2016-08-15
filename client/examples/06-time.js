@@ -1,13 +1,10 @@
 const assoc   = require('ramda/src/assoc')
 const compose = require('ramda/src/compose')
 const flip    = require('ramda/src/flip')
-const K       = require('ramda/src/always')
-const objOf   = require('ramda/src/objOf')
-const prop    = require('ramda/src/prop')
 
 const { action, h, handle } = require('../lib/redux')
 
-const init = compose(objOf('time'), Date.now)
+const init = { time: Date.now() }
 
 exports.reducer = handle(init, {
   Time: flip(assoc('time'))

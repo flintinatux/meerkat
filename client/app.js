@@ -1,5 +1,5 @@
-const redux = require('./lib/redux')
+const { mount } = require('./lib/redux')
 
-const Main = require('./examples/07-websockets')
+const Main = require('./examples/01-buttons')
 
-redux.mount(document.getElementById('root'), Main)
+mount(document.getElementById('root'), Main)

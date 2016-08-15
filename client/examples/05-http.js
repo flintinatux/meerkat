@@ -11,10 +11,16 @@ const { preventDefault, targetVal } = require('../lib/util')
 
 const giphyUri = 'https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag='
 
-const init = K({
+const init = {
   gif:     'https://goo.gl/RYb70Z',
   loading: true,
   topic:   'cats'
+}
+
+exports.reducer = handle(init, {
+  Gif:     flip(assoc('gif')),
+  Loading: flip(assoc('loading')),
+  Topic:   flip(assoc('topic'))
 })
 
 const gif = topic =>
@@ -25,12 +31,6 @@ const more = topic => dispatch => {
   dispatch(action('Loading', true))
   dispatch(action('Gif', gif(topic)))
 }
-
-exports.reducer = handle(init, {
-  Gif:     flip(assoc('gif')),
-  Loading: flip(assoc('loading')),
-  Topic:   flip(assoc('topic'))
-})
 
 exports.view = state =>
   h('div', { attrs: { class: css.root } }, [

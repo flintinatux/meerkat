@@ -7,7 +7,7 @@ const K       = require('ramda/src/always')
 const { action, h, handle } = require('../lib/redux')
 const IO = require('../lib/io')
 
-const init = K({ face: 1 })
+const init = { face: 1 }
 
 exports.reducer = handle(init, {
   Face: flip(assoc('face'))

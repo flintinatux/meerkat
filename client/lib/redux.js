@@ -49,11 +49,14 @@ const reduceWith = reducer => (dispatch, state) => {
 
   const { type, payload } = dispatch()
 
-  if (typeof payload.fork === 'function') {
+  if (forkable(payload)) {
     payload.map(action(type)).fork(error, dispatch)
-  } else if (typeof payload.then === 'function') {
+  } else if (thenable(payload)) {
     payload.then(action(type)).then(dispatch).catch(error)
   } else {
     return reducer(state(), dispatch())
   }
 }
+
+const forkable = x => x && typeof x.fork === 'function'
+const thenable = x => x && typeof x.then === 'function'
