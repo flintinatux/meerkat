@@ -12,15 +12,18 @@ const { preventDefault, targetVal }  = require('../lib/util')
 const socket = new WebSocket('ws://echo.websocket.org')
 
 const body = handle('', {
-  Body: (_, body) => body
+  Body: (_, body) => body,
+  Reset: K('')
 })
 
 const messages = list('Message')
 
 exports.reducer = combine({ body, messages })
 
-const listen = dispatch =>
+const connect = dispatch =>
   socket.onmessage = compose(dispatch, action('InsertMessage'), JSON.parse, prop('data'))
+
+const disconnect = _ => socket.onmessage = null
 
 const send = body => socket.send(JSON.stringify({ id: idgen(), body }))
 
@@ -30,7 +33,7 @@ exports.view = state =>
 
     h('div', {
       attrs: { class: css.messages },
-      redux: { create: listen }
+      redux: { create: connect, destroy: disconnect }
     }, mapList(state.messages, msg =>
       h('div', { attrs: { class: css.message } }, msg.body)
     )),
@@ -38,7 +41,7 @@ exports.view = state =>
     h('form', {
       attrs: { class: css.form },
       on: {
-        submit: compose(K(action('Body', '')), send, K(state.body), preventDefault)
+        submit: compose(action('Reset'), send, K(state.body), preventDefault)
       }
     }, [
       h('input', {
