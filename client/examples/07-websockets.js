@@ -1,11 +1,11 @@
 const compose = require('ramda/src/compose')
-const idgen   = require('idgen')
 const j2c     = require('j2c')
 const K       = require('ramda/src/always')
 const prop    = require('ramda/src/prop')
 const trim    = require('ramda/src/trim')
 
 const { action, combine, h, handle } = require('../lib/redux')
+const idgen = require('../lib/idgen')
 const { list, mapList } = require('../lib/list')
 const { preventDefault, targetVal }  = require('../lib/util')
 

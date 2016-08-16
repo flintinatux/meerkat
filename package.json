@@ -41,7 +41,6 @@
     "closurecompiler": "^1.6.0",
     "debug": "^2.2.0",
     "flyd": "^0.2.2",
-    "idgen": "^2.0.2",
     "j2c": "^0.11.2",
     "less": "^2.7.1",
     "normalize.css": "^4.2.0",
