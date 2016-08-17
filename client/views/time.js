@@ -1,23 +1,16 @@
-const assoc   = require('ramda/src/assoc')
 const compose = require('ramda/src/compose')
-const flip    = require('ramda/src/flip')
 
-const { action, h, handle } = require('../lib/redux')
-
-const init = { time: Date.now() }
-
-exports.reducer = handle(init, {
-  Time: flip(assoc('time'))
-})
+const { h }    = require('../lib/redux')
+const { tick } = require('../ducks/time')
 
 const angle = time  => 2 * Math.PI * (time % 60000) / 60000
 const handX = angle => 50 + 40 * Math.cos(angle)
 const handY = angle => 50 + 40 * Math.sin(angle)
 
 const startTicking = dispatch =>
-  setInterval(compose(dispatch, action('Time'), Date.now), 1000)
+  setInterval(compose(dispatch, tick, Date.now), 1000)
 
-exports.view = state =>
+module.exports = ({ time: state }) =>
   h('svg', {
     attrs: {
       viewBox: '0 0 100 100',

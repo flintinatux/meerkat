@@ -1,31 +1,14 @@
-const assoc   = require('ramda/src/assoc')
 const compose = require('ramda/src/compose')
-const flip    = require('ramda/src/flip')
 const j2c     = require('j2c')
 
-const { action, h, handle } = require('../lib/redux')
+const forms = require('../ducks/forms')
+const { h } = require('../lib/redux')
 const { preventDefault, targetVal } = require('../lib/util')
 
-const init = {
-  age:      0,
-  confirm:  '',
-  name:     '',
-  password: '',
-  validate: false
-}
-
-exports.reducer = handle(init, {
-  Age:      flip(assoc('age')),
-  Confirm:  flip(assoc('confirm')),
-  Name:     flip(assoc('name')),
-  Password: flip(assoc('password')),
-  Validate: assoc('validate', true)
-})
-
-exports.view = state =>
+module.exports = ({ forms: state }) =>
   h('form', {
     attrs: { class: css.root },
-    on: { submit: compose(action('Validate'), preventDefault) }
+    on: { submit: compose(forms.validate, preventDefault) }
   }, [
     h('style', css.toString()),
 
@@ -35,7 +18,7 @@ exports.view = state =>
         placeholder: 'Name',
         type: 'text'
       },
-      on: { input: compose(action('Name'), targetVal) }
+      on: { input: compose(forms.setName, targetVal) }
     }),
 
     h('input', {
@@ -44,7 +27,7 @@ exports.view = state =>
         placeholder: 'Age',
         type: 'number'
       },
-      on: { input: compose(action('Age'), parseInt, targetVal) }
+      on: { input: compose(forms.setAge, parseInt, targetVal) }
     }),
 
     h('input', {
@@ -53,7 +36,7 @@ exports.view = state =>
         placeholder: 'Password',
         type: 'password'
       },
-      on: { input: compose(action('Password'), targetVal) }
+      on: { input: compose(forms.setPassword, targetVal) }
     }),
 
     h('input', {
@@ -62,7 +45,7 @@ exports.view = state =>
         placeholder: 'Confirm password',
         type: 'password'
       },
-      on: { input: compose(action('Confirm'), targetVal) }
+      on: { input: compose(forms.setConfirm, targetVal) }
     }),
 
     h('button', {

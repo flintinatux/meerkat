@@ -1,26 +1,18 @@
-const assoc   = require('ramda/src/assoc')
 const compose = require('ramda/src/compose')
-const flip    = require('ramda/src/flip')
 const j2c     = require('j2c')
 const reverse = require('ramda/src/reverse')
 
-const { action, h, handle } = require('../lib/redux')
+const { h } = require('../lib/redux')
+const inputs = require('../ducks/inputs')
 const { targetVal } = require('../lib/util')
 
-const init = { content: '' }
-
-exports.reducer = handle(init, {
-  Change: flip(assoc('content')),
-  Reset:  assoc('content', '')
-})
-
-exports.view = state =>
+module.exports = ({ inputs: state }) =>
   h('div', { attrs: { class: css.root } }, [
     h('style', css.toString()),
 
     h('button', {
       attrs: { class: css.btn },
-      on: { click: action('Reset') }
+      on: { click: inputs.reset }
     }, 'Reset'),
 
     h('input', {
@@ -29,7 +21,7 @@ exports.view = state =>
         autofocus: true,
         placeholder: 'Text to reverse'
       },
-      on: { input: compose(action('Change'), targetVal) },
+      on: { input: compose(inputs.change, targetVal) },
       props: { value: state.content }
     }),
 

@@ -45,6 +45,7 @@
     "less": "^2.7.1",
     "normalize.css": "^4.2.0",
     "npm-run-all": "^2.3.0",
+    "path-to-regexp": "^1.5.3",
     "postcss-cli": "^2.5.2",
     "pug-cli": "^1.0.0-alpha6",
     "ramda": "^0.22.0",

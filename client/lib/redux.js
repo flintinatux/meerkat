@@ -32,10 +32,12 @@ exports.mount = (root, { reducer=I, view }) => {
   state.map(debug('state'))
   flyd.scan(patch(dispatch), root, state.map(view))
 
-  return function teardown() {
+  function teardown() {
     patch(dispatch)(root, '')
     dispatch.end(true)
   }
+
+  return { dispatch, teardown }
 }
 
 const patch = dispatch =>
@@ -44,7 +46,7 @@ const patch = dispatch =>
 const reduceWith = reducer => (dispatch, state) => {
   if (typeof dispatch() === 'function') {
     dispatch()(dispatch, state)
-    return undefined
+    return
   }
 
   const { type, payload } = dispatch()

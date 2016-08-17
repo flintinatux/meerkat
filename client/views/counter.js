@@ -1,28 +1,20 @@
-const dec = require('ramda/src/dec')
-const inc = require('ramda/src/inc')
 const j2c = require('j2c')
-const K   = require('ramda/src/always')
 
-const { action, h, handle } = require('../lib/redux')
+const counter = require('../ducks/counter')
+const { h } = require('../lib/redux')
 
-exports.reducer = handle(0, {
-  Dec:   dec,
-  Inc:   inc,
-  Reset: K(0)
-})
-
-exports.view = state =>
+module.exports = ({ counter: state }) =>
   h('div', { attrs: { class: css.root } }, [
     h('style', css.toString()),
 
     h('button', {
       attrs: { class: css.btn },
-      on: { click: action('Reset') }
+      on: { click: counter.reset }
     }, 'Reset'),
 
     h('button', {
       attrs: { class: css.btn },
-      on: { click: action('Dec') }
+      on: { click: counter.dec }
     }, '-'),
 
     h('input', {
@@ -35,7 +27,7 @@ exports.view = state =>
 
     h('button', {
       attrs: { class: css.btn },
-      on: { click: action('Inc') }
+      on: { click: counter.inc }
     }, '+'),
   ])
 
