@@ -13,6 +13,7 @@ const view = route.router('/counter', {
   '/http':    views.http,
   '/inputs':  views.inputs,
   '/random':  views.random,
+  '/sockets': views.sockets,
   '/time':    views.time
 })
 

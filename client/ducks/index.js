@@ -4,5 +4,6 @@ module.exports = {
   http:    require('./http'),
   inputs:  require('./inputs'),
   random:  require('./random'),
+  sockets: require('./sockets'),
   time:    require('./time')
 }

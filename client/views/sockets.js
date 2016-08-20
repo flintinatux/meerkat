@@ -4,30 +4,22 @@ const K       = require('ramda/src/always')
 const prop    = require('ramda/src/prop')
 const trim    = require('ramda/src/trim')
 
-const { action, combine, h, handle } = require('../lib/redux')
+const { h } = require('../lib/redux')
 const idgen = require('../lib/idgen')
-const { list, mapList } = require('../lib/list')
+const { mapList } = require('../lib/list')
 const { preventDefault, targetVal }  = require('../lib/util')
+const sockets = require('../ducks/sockets')
 
 const socket = new WebSocket('ws://echo.websocket.org')
 
-const body = handle('', {
-  Body: (_, body) => body,
-  Reset: K('')
-})
-
-const messages = list('Message')
-
-exports.reducer = combine({ body, messages })
-
 const connect = dispatch =>
-  socket.onmessage = compose(dispatch, action('InsertMessage'), JSON.parse, prop('data'))
+  socket.onmessage = compose(dispatch, sockets.insertMessage, JSON.parse, prop('data'))
 
 const disconnect = _ => socket.onmessage = null
 
 const send = body => socket.send(JSON.stringify({ id: idgen(), body }))
 
-exports.view = state =>
+module.exports = ({ sockets: state }) =>
   h('div', { attrs: { class: css.root } }, [
     h('style', css.toString()),
 
@@ -41,12 +33,12 @@ exports.view = state =>
     h('form', {
       attrs: { class: css.form },
       on: {
-        submit: compose(action('Reset'), send, K(state.body), preventDefault)
+        submit: compose(sockets.reset, send, K(state.body), preventDefault)
       }
     }, [
       h('input', {
         attrs: { class: css.body },
-        on: { input: compose(action('Body'), trim, targetVal) },
+        on: { input: compose(sockets.body, trim, targetVal) },
         props: { value: state.body }
       }),
       h('button', {
