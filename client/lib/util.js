@@ -22,3 +22,5 @@ exports.scan = function(fn, acc, s) {
 }
 
 exports.targetVal = path(['target', 'value'])
+
+exports.listToArray = list => list.ids.map(id => list.byId[id])

@@ -6,7 +6,7 @@ const trim    = require('ramda/src/trim')
 
 const { h } = require('../lib/redux')
 const idgen = require('../lib/idgen')
-const { mapList } = require('../lib/list')
+const { listToArray } = require('../lib/util')
 const { preventDefault, targetVal }  = require('../lib/util')
 const sockets = require('../ducks/sockets')
 
@@ -26,7 +26,7 @@ module.exports = ({ sockets: state }) =>
     h('div', {
       attrs: { class: css.messages },
       redux: { create: connect, destroy: disconnect }
-    }, mapList(state.messages, msg =>
+    }, listToArray(state.messages).map(msg =>
       h('div', { attrs: { class: css.message } }, msg.body)
     )),
 
