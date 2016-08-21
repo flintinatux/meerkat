@@ -6,14 +6,17 @@ const { action, handle } = require('../lib/redux')
 
 const prefix = concat('meerkat/time/')
 
-const TICK = prefix('TICK')
+const TICK  = prefix('TICK')
+const TIMER = prefix('TIMER')
 
 const init = { time: Date.now() }
 
 const reducer = handle(init, {
-  [ TICK ]: flip(assoc('time'))
+  [ TICK  ]: flip(assoc('time')),
+  [ TIMER ]: flip(assoc('timer'))
 })
 
-reducer.tick = action(TICK)
+reducer.tick  = action(TICK)
+reducer.timer = action(TIMER)
 
 module.exports = reducer
