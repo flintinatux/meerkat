@@ -1,5 +1,4 @@
 const compose = require('ramda/src/compose')
-const j2c     = require('j2c')
 const K       = require('ramda/src/always')
 const path    = require('ramda/src/path')
 
