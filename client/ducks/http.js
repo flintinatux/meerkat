@@ -6,9 +6,9 @@ const { action, handle } = require('../lib/redux')
 
 const prefix = concat('meerkat/http/')
 
-const GIF     = prefix('GIF')
-const LOADING = prefix('LOADING')
-const TOPIC   = prefix('TOPIC')
+const SET_GIF     = prefix('SET_GIF')
+const SET_LOADING = prefix('SET_LOADING')
+const SET_TOPIC   = prefix('SET_TOPIC')
 
 const init = {
   gif:     'https://goo.gl/RYb70Z',
@@ -17,13 +17,13 @@ const init = {
 }
 
 const reducer = handle(init, {
-  [ GIF ]:     flip(assoc('gif')),
-  [ LOADING ]: flip(assoc('loading')),
-  [ TOPIC ]:   flip(assoc('topic'))
+  [ SET_GIF ]:     flip(assoc('gif')),
+  [ SET_LOADING ]: flip(assoc('loading')),
+  [ SET_TOPIC ]:   flip(assoc('topic'))
 })
 
-reducer.gif     = action(GIF)
-reducer.loading = action(LOADING)
-reducer.topic   = action(TOPIC)
+reducer.setGif     = action(SET_GIF)
+reducer.setLoading = action(SET_LOADING)
+reducer.setTopic   = action(SET_TOPIC)
 
 module.exports = reducer
