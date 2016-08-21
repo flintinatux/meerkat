@@ -1,22 +1,22 @@
-const counter = require('../ducks/counter')
-const { h }   = require('../lib/redux')
+const { dec, inc, reset } = require('../ducks/counter')
+const { h } = require('../lib/redux')
 
-module.exports = ({ counter: state }) =>
+module.exports = ({ counter }) =>
   h('div.counter', [
     h('button.btn.action', {
-      on: { click: counter.reset }
+      on: { click: reset }
     }, 'Reset'),
 
     h('button.btn.action', {
-      on: { click: counter.dec }
+      on: { click: dec }
     }, '-'),
 
     h('input.input.count', {
       attrs: { disabled: true },
-      props: { value: state }
+      props: { value: counter }
     }),
 
     h('button.btn.action', {
-      on: { click: counter.inc }
+      on: { click: inc }
     }, '+'),
   ])
