@@ -13,7 +13,7 @@ const SET_PASSWORD = prefix('SET_PASSWORD')
 const VALIDATE     = prefix('VALIDATE')
 
 const init = {
-  age:      0,
+  age:      null,
   confirm:  '',
   name:     '',
   password: '',

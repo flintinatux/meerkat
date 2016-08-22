@@ -1,19 +1,22 @@
 const compose = require('ramda/src/compose')
 
-const forms = require('../ducks/forms')
+const { setAge, setConfirm, setName,
+        setPassword, validate } = require('../ducks/forms')
+
 const { h } = require('../lib/redux')
 const { preventDefault, targetVal } = require('../lib/util')
 
-module.exports = ({ forms: state }) =>
+module.exports = ({ forms }) =>
   h('form.forms', {
-    on: { submit: compose(forms.validate, preventDefault) }
+    on: { submit: compose(validate, preventDefault) }
   }, [
     h('input.input', {
       attrs: {
         placeholder: 'Name',
         type: 'text'
       },
-      on: { input: compose(forms.setName, targetVal) }
+      on: { input: compose(setName, targetVal) },
+      props: { value: forms.name }
     }),
 
     h('input.input', {
@@ -21,7 +24,8 @@ module.exports = ({ forms: state }) =>
         placeholder: 'Age',
         type: 'number'
       },
-      on: { input: compose(forms.setAge, parseInt, targetVal) }
+      on: { input: compose(setAge, parseInt, targetVal) },
+      props: { value: forms.age }
     }),
 
     h('input.input', {
@@ -29,7 +33,8 @@ module.exports = ({ forms: state }) =>
         placeholder: 'Password',
         type: 'password'
       },
-      on: { input: compose(forms.setPassword, targetVal) }
+      on: { input: compose(setPassword, targetVal) },
+      props: { value: forms.password }
     }),
 
     h('input.input', {
@@ -37,19 +42,20 @@ module.exports = ({ forms: state }) =>
         placeholder: 'Confirm password',
         type: 'password'
       },
-      on: { input: compose(forms.setConfirm, targetVal) }
+      on: { input: compose(setConfirm, targetVal) },
+      props: { value: forms.confirm }
     }),
 
     h('button.btn.submit', {
       attrs: { type: 'submit' }
     }, 'Submit'),
 
-    state.validate ? validation(state) : ''
+    forms.validate ? validation(forms) : ''
   ])
 
-const validation = state => {
+const validation = forms => {
   const errors = [],
-        { password, confirm } = state
+        { password, confirm } = forms
 
   if (password !== confirm) errors.push('Passwords do not match')
   if (password.length < 8)  errors.push('Password length must be >= 8 chars')
