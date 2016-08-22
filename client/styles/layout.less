@@ -10,6 +10,16 @@
     flex-grow: 2
   }
 
+  .link {
+    color: white;
+    padding: @padding/2 @padding;
+    text-decoration: none;
+
+    &:hover, &.active {
+      background-color: @gray-50;
+    }
+  }
+
   .nav {
     background-color: @gray-60;
     display: flex;
@@ -18,11 +28,5 @@
     height: 100%;
     max-width: 25%;
     padding: @padding 0;
-  }
-
-  .page {
-    color: white;
-    padding: @padding/2 @padding;
-    text-decoration: none;
   }
 }
