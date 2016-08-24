@@ -1,7 +1,7 @@
 const compose = require('ramda/src/compose')
-const K = require('ramda/src/always')
+const { h }   = require('puddles')
+const K       = require('ramda/src/always')
 
-const { h } = require('../lib/redux')
 const IO    = require('../lib/io')
 const { setFace } = require('../ducks/random')
 

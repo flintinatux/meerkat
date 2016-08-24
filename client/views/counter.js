@@ -1,5 +1,6 @@
+const { h } = require('puddles')
+
 const { dec, inc, reset } = require('../ducks/counter')
-const { h } = require('../lib/redux')
 
 module.exports = ({ counter }) =>
   h('div.counter', [

@@ -2,7 +2,7 @@ const assoc  = require('ramda/src/assoc')
 const concat = require('ramda/src/concat')
 const flip   = require('ramda/src/flip')
 
-const { action, handle } = require('../lib/redux')
+const { action, handle } = require('puddles')
 
 const prefix = concat('meerkat/inputs/')
 

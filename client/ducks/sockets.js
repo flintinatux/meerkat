@@ -3,7 +3,7 @@ const assoc  = require('ramda/src/assoc')
 const concat = require('ramda/src/concat')
 const K      = require('ramda/src/always')
 
-const { action, combine, handle } = require('../lib/redux')
+const { action, combine, handle } = require('puddles')
 
 const prefix = concat('meerkat/websockets/')
 

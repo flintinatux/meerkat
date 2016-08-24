@@ -1,6 +1,6 @@
 const compose = require('ramda/src/compose')
+const { h }   = require('puddles')
 
-const { h }    = require('../lib/redux')
 const { tick, timer } = require('../ducks/time')
 
 const angle = time  => 2 * Math.PI * (time % 60000) / 60000

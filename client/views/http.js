@@ -1,8 +1,8 @@
 const compose = require('ramda/src/compose')
+const { h }   = require('puddles')
 const K       = require('ramda/src/always')
 const path    = require('ramda/src/path')
 
-const { h }   = require('../lib/redux')
 const { preventDefault, targetVal } = require('../lib/util')
 const request = require('../lib/request')
 const { setGif, setLoading, setTopic } = require('../ducks/http')

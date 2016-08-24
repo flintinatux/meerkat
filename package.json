@@ -15,12 +15,11 @@
   "main": "index.js",
   "scripts": {
     "build": "run-p build:*",
-    "build:scripts": "browserify client/app.js > dist/app.js",
+    "build:scripts": "browserify client/app.js | buble | uglifyjs -c -m > dist/app.js",
     "build:styles": "lessc client/app.less | postcss -u autoprefixer | cleancss --s0 > dist/app.css",
     "build:views": "pug -o dist client/*.pug",
     "clean": "rm -rf dist/*",
     "heroku-postbuild": "npm run build",
-    "postbuild": "ccjs dist/app.js --warning_level=QUIET > dist/app-min.js",
     "prebuild": "npm run clean && mkdir -p dist",
     "prewatch": "npm run clean && mkdir -p dist",
     "prewatch:styles": "npm run build:styles",
@@ -37,8 +36,8 @@
     "browser-request": "^0.3.3",
     "browser-sync": "^2.14.0",
     "browserify": "^13.1.0",
+    "buble": "^0.13.1",
     "clean-css": "^3.4.19",
-    "closurecompiler": "^1.6.0",
     "debug": "^2.2.0",
     "flyd": "^0.2.2",
     "less": "^2.7.1",
@@ -46,14 +45,15 @@
     "npm-run-all": "^2.3.0",
     "path-to-regexp": "^1.5.3",
     "postcss-cli": "^2.5.2",
+    "puddles": "github:flintinatux/puddles#master",
     "pug-cli": "^1.0.0-alpha6",
     "ramda": "^0.22.0",
     "snabbdom": "^0.5.1",
+    "uglify-js": "^2.7.3",
     "union-type": "^0.3.1"
   },
   "devDependencies": {
     "eye": "0.0.3",
-    "treis": "^2.3.16",
     "watchify": "^3.7.0"
   }
 }

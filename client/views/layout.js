@@ -1,6 +1,6 @@
-const { h } = require('../lib/redux')
+const { h } = require('puddles')
 
-module.exports = content => state =>
+const layout = content => state =>
   h('div.layout', [
     h('nav.nav', [
       link('#!/counter', '01 - Counter'),
@@ -20,3 +20,5 @@ const link = (href, children='') =>
     attrs: { href },
     class: { active: location.hash === href }
   }, children)
+
+module.exports = layout

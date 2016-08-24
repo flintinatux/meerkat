@@ -1,9 +1,9 @@
 const compose = require('ramda/src/compose')
+const { h }   = require('puddles')
 const K       = require('ramda/src/always')
 const prop    = require('ramda/src/prop')
 const trim    = require('ramda/src/trim')
 
-const { h } = require('../lib/redux')
 const idgen = require('../lib/idgen')
 const { listToArray } = require('../lib/util')
 const { preventDefault, targetVal }  = require('../lib/util')

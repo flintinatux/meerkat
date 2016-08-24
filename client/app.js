@@ -1,9 +1,8 @@
 const assoc = require('ramda/src/assoc')
+const { combine, mount, route } = require('puddles')
 
-const { combine, mount } = require('./lib/redux')
 const layout   = require('./views/layout')
 const reducers = require('./ducks')
-const route    = require('./lib/route')
 const views    = require('./views')
 
 const reducer = combine(assoc('route', route.reducer, reducers))

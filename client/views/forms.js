@@ -1,9 +1,9 @@
 const compose = require('ramda/src/compose')
+const { h }   = require('puddles')
 
 const { setAge, setConfirm, setName,
         setPassword, validate } = require('../ducks/forms')
 
-const { h } = require('../lib/redux')
 const { preventDefault, targetVal } = require('../lib/util')
 
 module.exports = ({ forms }) =>

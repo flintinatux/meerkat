@@ -1,8 +1,8 @@
 const compose = require('ramda/src/compose')
+const { h }   = require('puddles')
 const reverse = require('ramda/src/reverse')
 
 const { change, reset } = require('../ducks/inputs')
-const { h } = require('../lib/redux')
 const { targetVal } = require('../lib/util')
 
 module.exports = ({ inputs: { content } }) =>

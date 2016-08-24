@@ -3,7 +3,7 @@ const dec    = require('ramda/src/dec')
 const inc    = require('ramda/src/inc')
 const K      = require('ramda/src/always')
 
-const { action, handle } = require('../lib/redux')
+const { action, handle } = require('puddles')
 
 const prefix = concat('meerkat/counter/')
 
